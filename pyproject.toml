@@ -36,8 +36,10 @@ dependencies = [
 ]
 
 [project.urls]
+
 Homepage = "https://github.com/shevandrin/botscanner"
 Issues = "https://github.com/shevandrin/botscanner/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
