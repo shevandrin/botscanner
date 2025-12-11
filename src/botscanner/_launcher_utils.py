@@ -116,3 +116,43 @@ def _click_element_from_data(driver: WebDriver, element_data: dict):
             target_element.click()
         except NoSuchElementException as e:
             print(f"Error: Could not find element in main document. Details: {e}")
+            
+            
+def _check_robots_txt(driver: WebDriver) -> bool:
+    """
+    Reads the robots.txt file for the current page and checks if crawlers are allowed.
+                
+    Args:
+        driver: The active Selenium WebDriver instance.
+                    
+    Returns:
+        True if crawling is allowed, False if forbidden.
+    """
+    
+    from urllib.parse import urlparse
+    from robotexclusionrulesparser import RobotExclusionRulesParser
+    import requests
+
+    try:
+        # Get the current URL from the driver
+        url = driver.current_url
+        
+        # Prepare the robots.txt URL
+        parsed = urlparse(url)
+        robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
+
+        try:
+            text = requests.get(robots_url, timeout=5).text
+        except Exception:
+            return True
+              
+        rp = RobotExclusionRulesParser()
+        rp.parse(text)
+
+        path = parsed.path or "/"
+
+        return rp.is_allowed("*", path)
+                        
+    except Exception as e:
+        print(f"⚠ Could not read robots.txt: {e}")
+        return True  # Assume allowed if robots.txt is inaccessible
