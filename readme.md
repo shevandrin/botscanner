@@ -29,6 +29,9 @@ The core functionality of botscanner is designed for modular integration into cu
 ### Authorship and License
 
 This package was developed by Andrey Shevandrin as the practical component of a Master's Thesis at TU Chemnitz.
+
 Author: Andrey Shevandrin
+
 Contact: https://github.com/shevandrin/botscanner/issues
+
 Year: 2025
