@@ -20,7 +20,7 @@ def load_patterns():
     print("Loading heuristic patterns from file for the first time...")
 
     try:
-        patterns_file_path = resources.files('botscout.data').joinpath('patterns.yaml')
+        patterns_file_path = resources.files('botscanner.data').joinpath('patterns.yaml')
 
         with patterns_file_path.open('r') as f:
             data = yaml.safe_load(f)
