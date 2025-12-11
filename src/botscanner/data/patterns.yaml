@@ -21,3 +21,7 @@ detection:
     - "Hi! Do you need support?"
     - "Chat with Noty"
     - "Need help?Click to Chat"
+    - "Caht with us"
+  core_anchors:
+    chatbot_anchors:
+      - "chat"

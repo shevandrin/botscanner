@@ -2,6 +2,69 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
+from .patterns import CORE_ANCHORS_PATTERNS
+
+
+def test_function():
+    # It checks that the module is imported correctly.
+    print("Test function executed.")
+    return "test successful"
+
+def _find_elements_by_anchors(driver: WebDriver):
+    """
+    Finds all elements that contain common chatbot-related anchor texts.
+
+    Returns:
+        A list of WebElements that match the anchor text criteria.
+    """
+
+    chatbot_anchors = CORE_ANCHORS_PATTERNS.get('chatbot_anchors', [])
+
+    anchor_queries = []
+    for anchor in chatbot_anchors:
+        anchor_upper = anchor.upper()
+        anchor_lower = anchor.lower()
+        
+        anchor_queries.extend([
+            f"//button[contains(translate(@aria-label, '{anchor_upper}', '{anchor_lower}'), '{anchor_lower}')]",
+            f"//button[contains(translate(@class, '{anchor_upper}', '{anchor_lower}'), '{anchor_lower}')]",
+            f"//button[contains(translate(@id, '{anchor_upper}', '{anchor_lower}'), '{anchor_lower}')]",
+            f"//button[contains(translate(., '{anchor_upper}', '{anchor_lower}'), '{anchor_lower}')]",
+            f"//a[contains(translate(@aria-label, '{anchor_upper}', '{anchor_lower}'), '{anchor_lower}')]",
+            f"//a[contains(translate(@class, '{anchor_upper}', '{anchor_lower}'), '{anchor_lower}')]",
+            f"//a[contains(translate(., '{anchor_upper}', '{anchor_lower}'), '{anchor_lower}')]",
+            f"//div[@role='button' and contains(translate(@aria-label, '{anchor_upper}', '{anchor_lower}'), '{anchor_lower}')]",
+            f"//div[@role='button' and contains(translate(@class, '{anchor_upper}', '{anchor_lower}'), '{anchor_lower}')]",
+            f"//div[@role='button' and contains(translate(., '{anchor_upper}', '{anchor_lower}'), '{anchor_lower}')]",
+            f"//*[contains(translate(@class, '{anchor_upper}', '{anchor_lower}'), '{anchor_lower}')][@role='button']",
+            f"//iframe[contains(translate(@title, '{anchor_upper}', '{anchor_lower}'), '{anchor_lower}')]",
+        ])
+
+    all_queries = anchor_queries
+
+    try:
+        elements = []
+        seen_elements = set()
+
+        for xpath in all_queries:
+            try:
+                found_elements = driver.find_elements(By.XPATH, xpath)
+                for elem in found_elements:
+                    # Avoid duplicates
+                    elem_id = id(elem)
+                    if elem_id not in seen_elements:
+                        seen_elements.add(elem_id)
+                        elements.append(elem)
+            except Exception as e:
+                # Skip invalid XPath queries
+                pass
+
+        print(f"Found {len(elements)} element(s) matching chatbot anchors.")
+        return elements
+
+    except Exception as e:
+        print(f"Error executing anchor text search: {e}")
+        return []
 
 
 def _find_elements_by_computed_style(driver: WebDriver):
@@ -90,9 +153,6 @@ def _get_html_from_element(element: WebElement, driver: WebDriver):
     iframe_soup = BeautifulSoup(iframe_html, features="html.parser")
     iframe_tag.clear()
     iframe_tag.append(iframe_soup)
-    # print("----")
-    # print(soup.text)
-    # print("----")
 
     return soup.prettify()
 
