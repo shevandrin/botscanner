@@ -18,6 +18,40 @@ def _prepare_url(url: str) -> str:
 
     return url
 
+def _query_shadow_buttons(driver, phrases):
+    """
+    Searches for buttons with matching text phrases in shadow DOM and regular DOM.
+    
+    Args:
+        driver: The active Selenium WebDriver instance.
+        phrases: A list of text phrases to search for in button elements.
+    
+    Returns:
+        A list of button elements whose text content contains any of the phrases.
+    """
+    script = """
+    const phrases = arguments[0].map(p => p.toLowerCase());
+    const results = [];
+
+    function walk(root) {
+      const tree = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+      let node;
+      while ((node = tree.nextNode())) {
+        if (node.shadowRoot) walk(node.shadowRoot);
+        const tag = (node.tagName || '').toLowerCase();
+        if (tag === 'button' || (node.getAttribute && node.getAttribute('role') === 'button')) {
+          const txt = (node.textContent || '').trim().toLowerCase();
+          if (txt && phrases.some(p => txt.includes(p))) {
+            results.push(node);
+          }
+        }
+      }
+    }
+
+    walk(document);
+    return results;
+    """
+    return driver.execute_script(script, phrases)
 
 def _handle_cookie_consent(driver: WebDriver):
     """
@@ -38,6 +72,7 @@ def _handle_cookie_consent(driver: WebDriver):
     common_button_xpaths = generated_xpaths + literal_xpaths
     print("Checking for cookie consent banner...")
 
+    # main DOM traversal
     for xpath in common_button_xpaths:
         # Find the button using the current XPath
         consent_buttons = driver.find_elements(By.XPATH, xpath)
@@ -63,6 +98,24 @@ def _handle_cookie_consent(driver: WebDriver):
                 # Catch any other unexpected errors
                 print(f"  - An unexpected error occurred: {e}")
                 continue
+    
+    # shadow DOM traversal
+    try:
+        print("  - No regular banner found. Searching shadow roots...")
+        shadow_buttons = _query_shadow_buttons(driver, text_phrases)
+        for el in shadow_buttons:
+            try:
+                driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", el)
+                driver.execute_script("arguments[0].click();", el)
+                print("  - Clicked consent button inside shadow root.")
+                time.sleep(1)
+                return
+            except Exception as e:
+                print(f"  - Shadow-root click failed: {e}")
+                continue
+    except Exception as e:
+        print(f"  - Shadow-root traversal error: {e}")
+        
     print("  - No cookie consent banner found, or it was already handled.")
 
 
