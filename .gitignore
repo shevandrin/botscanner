@@ -127,6 +127,7 @@ venv.bak/
 # Test script file
 test.py
 *.ipynb
+*.csv
 
 # Auto-generated files
 *.egg-info/
