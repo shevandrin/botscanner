@@ -32,5 +32,5 @@ jobs:
         git remote set-url gitlab $GITLAB_URL
         
         # Push all branches and tags
-        git push --all gitlab
-        git push --tags gitlab
+        git push --all gitlab --force
+        git push --tags gitlab --force
