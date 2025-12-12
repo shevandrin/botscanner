@@ -22,7 +22,7 @@ jobs:
     
     - name: Push to GitLab using HTTPS
       env:
-        GITLAB_TOKEN: ${{ JsdkwSYMIUhU3MRUhFTR9W86MQp1OjRtdwk.01.0z1e9jkxe }}
+        GITLAB_TOKEN: ${{ Bq-H1k2f_LCGVzXnDF3qQW86MQp1OmJhOAk.01.0z09arejm }}
         GITLAB_USERNAME: "andsh--tu-chemnitz.de"
       run: |
         # GitLab SSO requires token authentication via HTTPS
