@@ -53,7 +53,7 @@ def _query_shadow_buttons(driver, phrases):
     """
     return driver.execute_script(script, phrases)
 
-def _handle_cookie_consent(driver: WebDriver):
+def _handle_cookie_consent(driver: WebDriver, quiet: bool = True):
     """
     Attempts to find and click a cookie consent button.
 
@@ -80,9 +80,9 @@ def _handle_cookie_consent(driver: WebDriver):
             try:
                 # If found, try to click it
                 if button.is_displayed() and button.is_enabled():
-                    print(f"  - Found consent button with XPath: {xpath}")
+                    if not quiet: print(f"  - Found consent button with XPath: {xpath}")
                     button.click()
-                    print("  - Clicked the consent button.")
+                    if not quiet: print("  - Clicked the consent button.")
                     time.sleep(1)
                     return
             except NoSuchElementException:
@@ -90,33 +90,33 @@ def _handle_cookie_consent(driver: WebDriver):
                 continue
             except ElementClickInterceptedException:
                 # The button might be temporarily unclickable, try a JS click.
-                print("  - Regular click intercepted, trying JavaScript click.")
+                if not quiet: print("  - Regular click intercepted, trying JavaScript click.")
                 driver.execute_script("arguments[0].click();", button)
                 time.sleep(1)
                 return
             except Exception as e:
                 # Catch any other unexpected errors
-                print(f"  - An unexpected error occurred: {e}")
+                if not quiet: print(f"  - An unexpected error occurred: {e}")
                 continue
     
     # shadow DOM traversal
     try:
-        print("  - No regular banner found. Searching shadow roots...")
+        if not quiet: print("  - No regular banner found. Searching shadow roots...")
         shadow_buttons = _query_shadow_buttons(driver, text_phrases)
         for el in shadow_buttons:
             try:
                 driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", el)
                 driver.execute_script("arguments[0].click();", el)
-                print("  - Clicked consent button inside shadow root.")
+                if not quiet: print("  - Clicked consent button inside shadow root.")
                 time.sleep(1)
                 return
             except Exception as e:
-                print(f"  - Shadow-root click failed: {e}")
+                if not quiet: print(f"  - Shadow-root click failed: {e}")
                 continue
     except Exception as e:
-        print(f"  - Shadow-root traversal error: {e}")
+        if not quiet: print(f"  - Shadow-root traversal error: {e}")
         
-    print("  - No cookie consent banner found, or it was already handled.")
+    if not quiet: print("  - No cookie consent banner found, or it was already handled.")
 
 
 def _click_element_from_data(driver: WebDriver, element_data: dict):
