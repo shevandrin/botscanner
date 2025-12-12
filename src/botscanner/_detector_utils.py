@@ -10,7 +10,7 @@ def test_function():
     print("Test function executed.")
     return "test successful"
 
-def _find_elements_by_anchors(driver: WebDriver):
+def _find_elements_by_anchors(driver: WebDriver, quiet: bool = True):
     """
     Finds all elements that contain common chatbot-related anchor texts.
 
@@ -59,11 +59,11 @@ def _find_elements_by_anchors(driver: WebDriver):
                 # Skip invalid XPath queries
                 pass
 
-        print(f"Found {len(elements)} element(s) matching chatbot anchors.")
+        if not quiet: print(f"Found {len(elements)} element(s) matching chatbot anchors.")
         return elements
 
     except Exception as e:
-        print(f"Error executing anchor text search: {e}")
+        if not quiet: print(f"Error executing anchor text search: {e}")
         return []
 
 
