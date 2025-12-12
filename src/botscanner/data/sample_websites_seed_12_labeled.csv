@@ -1,0 +1,36 @@
+old_index,company,url,s1_candidates,is_chatbot_widget,pass_robots,s2_candidates
+28,Uniqlo,https://www.uniqlo.com/us/auth/v1/login?flow=a7fd3dd6-fe22-44f1-a8af-2ab99728c5df&t=en-desktop,0,False,True,0
+46,Sendbird,https://sendbird.com/,0,False,True,0
+7,Sephora,https://www.sephora.com/,0,False,True,0
+41,WotNot,https://wotnot.io/,5,True,True,1
+36,Reliance Jio,https://www.jio.com/help/home#/,2,True,True,0
+29,United Airlines,https://www.united.com/en/us/fly/help-center.html#,0,False,True,0
+21,Infobip,https://www.infobip.com,5,True,True,0
+48,VFS Global,https://visa.vfsglobal.com/ind/en/deu/contact-us,0,True,True,1
+19,Howly,https://howly.com/info/contact-us/,1,True,True,0
+8,Vainu,https://www.vainu.com,0,True,True,0
+17,Eye-OO,https://www.eye-oo.com,0,True,True,0
+38,Kommunicate,https://www.kommunicate.io/,10,True,True,0
+37,Orange,https://orange.jo/en/pages/djingo,0,True,True,0
+15,Endeksa,https://www.endeksa.com/en/,0,False,True,0
+31,Walgreens,https://www.walgreens.com/mktg/contactus,0,False,True,0
+14,Devialet,https://www.devialet.com/en-us/amplifiers/,0,False,True,0
+26,Salesforce ,https://www.salesforce.com/company/contact-us/?d=cta-header-9,0,True,True,0
+9,Nordstrom,https://www.nordstrom.com/,0,False,False,0
+33,Zillow,https://zillow.zendesk.com/hc/en-us/,0,False,True,0
+47,AT&T,https://m.att.com/chat/,3,True,True,0
+20,IHerb,https://ar.iherb.com/help/contact,1,True,True,0
+16,Expedia,https://www.expedia.com,0,False,True,0
+24,PluralSight,https://www.pluralsight.com,0,True,True,0
+42,HDFC Bank,https://www.hdfcbank.com/personal/ways-to-bank/eva,0,False,True,0
+32,Wineshipping,https://wineshipping.com,0,False,True,0
+35,Samsung,https://www.samsung.com/latin_en/support/contact/#start-chat,9,True,True,1
+23,Lufthansa,https://www.lufthansa.com/ar/en/help-and-contact,0,False,True,0
+1,H&M,https://www2.hm.com/en_us/customer-service.html,0,True,True,0
+30,Voiceflow,https://www.voiceflow.com,0,False,True,0
+4,SSH,https://www.sshxl.nl/en,0,True,True,0
+44,HSBC Bank,https://www.hsbc.com.hk/ways-to-bank/live-chat/,4,True,True,0
+39,Sensely,https://sensely.com/,0,True,True,0
+18,Gelin,https://gelindiamond.com,0,True,True,0
+40,AWS,https://aws.amazon.com/chatbot,2,True,True,0
+43,Standard Chartered,https://www.sc.com/hk/help/chat-with-us/,3,True,True,0
