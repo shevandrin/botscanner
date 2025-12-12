@@ -177,9 +177,6 @@ def _find_cursor_is_pointer(container_element: WebElement, driver: WebDriver):
         A dictionary containing the found element and the exploration path.
     """
     javascript_to_execute = """
-    // =========================================================================
-    //  HELPER FUNCTIONS
-    // =========================================================================
 
     function getXPath(node) {
         if (!node || node.nodeType !== 1) { // Only process element nodes (type 1)
@@ -189,9 +186,6 @@ def _find_cursor_is_pointer(container_element: WebElement, driver: WebDriver):
             return '/html/body';
         }
         if (node.id) {
-            // --- THE FIX IS HERE ---
-            // Changed from a template literal to standard string concatenation.
-            // This is much safer when embedding JS inside a Python string.
             return '//*[@id="' + node.id + '"]';
         }
 
@@ -221,9 +215,6 @@ def _find_cursor_is_pointer(container_element: WebElement, driver: WebDriver):
         }, {});
     }
 
-    // =========================================================================
-    //  CORE RECURSIVE FUNCTION
-    // =========================================================================
 
     function findPointerCursorElements(startNode, maxDepth = 10, currentDepth = 0, iframeXPath = null) {
         if (!startNode || currentDepth > maxDepth) return [];
@@ -272,10 +263,6 @@ def _find_cursor_is_pointer(container_element: WebElement, driver: WebDriver):
 
         return results;
     }
-
-    // =========================================================================
-    //  MAIN EXECUTION
-    // =========================================================================
 
     return findPointerCursorElements(arguments[0], 10, 0, null);
     """
