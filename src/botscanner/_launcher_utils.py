@@ -70,7 +70,7 @@ def _handle_cookie_consent(driver: WebDriver, quiet: bool = True):
     literal_xpaths = COOKIE_PATTERNS.get('literal_xpaths', [])
     generated_xpaths = [f"//button[contains(., '{phrase}')]" for phrase in text_phrases]
     common_button_xpaths = generated_xpaths + literal_xpaths
-    print("Checking for cookie consent banner...")
+    if not quiet: print("Checking for cookie consent banner...")
 
     # main DOM traversal
     for xpath in common_button_xpaths:
