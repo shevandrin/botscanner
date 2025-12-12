@@ -5,7 +5,7 @@ from selenium.common.exceptions import (
 )
 
 
-def _is_element_clickable(element: WebElement, driver: WebDriver = None) ->  bool:
+def _is_element_clickable(element: WebElement, driver: WebDriver = None, quiet: bool = True) ->  bool:
     """
     Checks if a WebElement is clickable WITHOUT clicking it.
     
@@ -22,24 +22,24 @@ def _is_element_clickable(element: WebElement, driver: WebDriver = None) ->  boo
     try:
         # Check 1: Element is displayed
         if not element.is_displayed():
-            print(f"  ✗ Not displayed")
+            if not quiet: print(f"  ✗ Not displayed")
             return False
         
         # Check 2: Element is enabled
         if not element.is_enabled():
-            print(f"  ✗ Not enabled")
+            if not quiet: print(f"  ✗ Not enabled")
             return False
         
         # Check 3: Element has size
         size = element.size
         if size['width'] == 0 or size['height'] == 0:
-            print(f"  ✗ Zero size")
+            if not quiet: print(f"  ✗ Zero size")
             return False
         
         # Check 4: Element is in viewport
         location = element.location
         if location['x'] < 0 or location['y'] < 0:
-            print(f"  ✗ Outside viewport")
+            if not quiet: print(f"  ✗ Outside viewport")
             return False
         
         # Check 5: CSS properties and cursor style
@@ -58,12 +58,12 @@ def _is_element_clickable(element: WebElement, driver: WebDriver = None) ->  boo
             """
             result = driver.execute_script(script, element)
             if result != 'ok':
-                print(f"  ✗ CSS issue: {result}")
+                if not quiet: print(f"  ✗ CSS issue: {result}")
                 return False
         
-        print(f"  ✓ Clickable (cursor: pointer)")
+        if not quiet: print(f"  ✓ Clickable (cursor: pointer)")
         return True
         
     except Exception as e:
-        print(f"  ✗ Error: {e}")
+        if not quiet: print(f"  ✗ Error: {e}")
         return False
