@@ -10,6 +10,8 @@ detection:
       - "Accept all"
       - "Zustimmen"
       - "ZUSTIMMEN"
+      - "Alle akzeptieren"
+      - "ALLE AKZEPTIEREN"
     literal_xpaths:
       - "//button[@id='cookie_action_close_header']"
   start_phrases:
