@@ -22,11 +22,11 @@ jobs:
     
     - name: Push to GitLab using HTTPS
       env:
-        GITLAB_TOKEN: ${{ Bq-H1k2f_LCGVzXnDF3qQW86MQp1OmJhOAk.01.0z09arejm }}
+        GITLAB_TOKEN: ${{ secrets.GITLAB_MIRROR }}
         GITLAB_USERNAME: "andsh--tu-chemnitz.de"
       run: |
         # GitLab SSO requires token authentication via HTTPS
-        GITLAB_URL="https://$GITLAB_USERNAME:$GITLAB_TOKEN@https://gitlab.hrz.tu-chemnitz.de/vsr/edu/advising/ma-andrey-shevandrin.git"
+        GITLAB_URL="https://$GITLAB_USERNAME:$GITLAB_TOKEN@gitlab.hrz.tu-chemnitz.de/vsr/edu/advising/ma-andrey-shevandrin.git"
         
         git remote add gitlab $GITLAB_URL || true
         git remote set-url gitlab $GITLAB_URL
