@@ -1,0 +1,36 @@
+name: Mirror to GitLab (HTTPS with PAT)
+
+on:
+  push:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout GitHub repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Configure Git
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+    
+    - name: Push to GitLab using HTTPS
+      env:
+        GITLAB_TOKEN: ${{ secrets.GITLAB_MIRROR }}
+        GITLAB_USERNAME: "andsh--tu-chemnitz.de"
+      run: |
+        # GitLab SSO requires token authentication via HTTPS
+        GITLAB_URL="https://$GITLAB_USERNAME:$GITLAB_TOKEN@gitlab.hrz.tu-chemnitz.de/vsr/edu/advising/ma-andrey-shevandrin.git"
+        
+        git remote add gitlab $GITLAB_URL || true
+        git remote set-url gitlab $GITLAB_URL
+        
+        # Push all branches and tags
+        git push --all gitlab --force
+        git push --tags gitlab --force
