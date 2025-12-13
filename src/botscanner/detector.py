@@ -19,11 +19,24 @@ class ChatbotDetector:
         }
         candidate = None
 
+        candidates_log = {
+        "strategy_1": [],
+        "strategy_2": []
+        }
+
         # The first starategy is to find elements by anchors
         s1_elements = _find_elements_by_anchors(driver, quiet)
         if len(s1_elements) > 0:
             s1_elements_clickable = [_is_element_clickable(el, driver, quiet) for el in s1_elements]
             s1_counts = s1_elements_clickable.count(True)
+            for idx, el in enumerate(s1_elements):
+                candidates_log["strategy_1"].append({
+                    "index": idx,
+                    "clickable": s1_elements_clickable[idx],
+                    "html": el.get_attribute('outerHTML'),
+                    "tag": el.tag_name,
+                    "text": el.text[:100] if el.text else ""  # First 100 chars
+            })
             if s1_counts == 1:
                 vprint("The candidate chatbot launcher element found by the first strategy", quiet)              
                 stats["s1_candidates"] = 1
@@ -41,6 +54,14 @@ class ChatbotDetector:
         if len(s2_elements) > 0:
                 s2_elements_clickable = [_is_element_clickable(el, driver, quiet) for el in s2_elements]
                 s2_counts = s2_elements_clickable.count(True)
+                for idx, el in enumerate(s2_elements):
+                    candidates_log["strategy_2_computed_style"].append({
+                    "index": idx,
+                    "clickable": s2_elements_clickable[idx],
+                    "html": el.get_attribute('outerHTML'),
+                    "tag": el.tag_name,
+                    "text": el.text[:100] if el.text else ""
+                })
                 if s2_counts == 1:
                     vprint("The candidate chatbot launcher element found by the second starategy", quiet)              
                     stats["s2_candidates"] = 1
@@ -53,4 +74,4 @@ class ChatbotDetector:
         else:
                 vprint("The first starategy found no elements.", quiet)
 
-        return candidate, json.dumps(stats)
+        return candidate, json.dumps(stats), candidates_log
