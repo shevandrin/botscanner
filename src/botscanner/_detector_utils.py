@@ -3,6 +3,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 from .patterns import CORE_ANCHORS_PATTERNS
+from .utils import vprint
 
 
 def test_function():
@@ -59,15 +60,15 @@ def _find_elements_by_anchors(driver: WebDriver, quiet: bool = True):
                 # Skip invalid XPath queries
                 pass
 
-        if not quiet: print(f"Found {len(elements)} element(s) matching chatbot anchors.")
+        vprint(f"Found {len(elements)} element(s) matching chatbot anchors.", quiet)
         return elements
 
     except Exception as e:
-        if not quiet: print(f"Error executing anchor text search: {e}")
+        vprint(f"Error executing anchor text search: {e}", quiet)
         return []
 
 
-def _find_elements_by_computed_style(driver: WebDriver):
+def _find_elements_by_computed_style(driver: WebDriver, quiet: bool = True):
     """
     Finds all elements that match specific computed style properties
     common to chatbot widgets (e.g., fixed position, high z-index).
@@ -111,13 +112,13 @@ def _find_elements_by_computed_style(driver: WebDriver):
     try:
         elements = driver.execute_script(javascript_to_execute)
         if elements:
-            print(f"Found {len(elements)} element(s) matching computed style criteria.")
+            vprint(f"Found {len(elements)} element(s) matching computed style criteria.", quiet)
             return elements
         else:
-            print("No elements matched the computed style criteria.")
+            vprint("No elements matched the computed style criteria.", quiet)
             return []
     except Exception as e:
-        print(f"Error executing computed style search script: {e}")
+        vprint(f"Error executing computed style search script: {e}", quiet)
         return []
 
 
@@ -274,3 +275,4 @@ def _find_cursor_is_pointer(container_element: WebElement, driver: WebDriver):
     except Exception as e:
         print(f"  - An error occurred during the recursive search script: {e}")
         return {'foundElement': None, 'exploredPath': []}
+

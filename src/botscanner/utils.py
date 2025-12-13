@@ -5,6 +5,12 @@ from selenium.common.exceptions import (
 )
 
 
+def vprint(message: str, quiet: bool) -> None:
+    """Print message only if not in quiet mode."""
+    if not quiet:
+        print(message)
+        
+
 def _is_element_clickable(element: WebElement, driver: WebDriver = None, quiet: bool = True) ->  bool:
     """
     Checks if a WebElement is clickable WITHOUT clicking it.
@@ -22,24 +28,24 @@ def _is_element_clickable(element: WebElement, driver: WebDriver = None, quiet: 
     try:
         # Check 1: Element is displayed
         if not element.is_displayed():
-            if not quiet: print(f"  ✗ Not displayed")
+            vprint(f"  ✗ Not displayed", quiet)
             return False
         
         # Check 2: Element is enabled
         if not element.is_enabled():
-            if not quiet: print(f"  ✗ Not enabled")
+            vprint(f"  ✗ Not enabled", quiet)
             return False
         
         # Check 3: Element has size
         size = element.size
         if size['width'] == 0 or size['height'] == 0:
-            if not quiet: print(f"  ✗ Zero size")
+            vprint(f"  ✗ Zero size", quiet)
             return False
         
         # Check 4: Element is in viewport
         location = element.location
         if location['x'] < 0 or location['y'] < 0:
-            if not quiet: print(f"  ✗ Outside viewport")
+            vprint(f"  ✗ Outside viewport", quiet)
             return False
         
         # Check 5: CSS properties and cursor style
@@ -58,12 +64,12 @@ def _is_element_clickable(element: WebElement, driver: WebDriver = None, quiet: 
             """
             result = driver.execute_script(script, element)
             if result != 'ok':
-                if not quiet: print(f"  ✗ CSS issue: {result}")
+                vprint(f"  ✗ CSS issue: {result}", quiet)
                 return False
         
-        if not quiet: print(f"  ✓ Clickable (cursor: pointer)")
+        vprint(f"  ✓ Clickable (cursor: pointer, quiet)", quiet)
         return True
         
     except Exception as e:
-        if not quiet: print(f"  ✗ Error: {e}")
+        vprint(f"  ✗ Error: {e}", quiet)
         return False

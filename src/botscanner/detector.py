@@ -1,6 +1,6 @@
 from selenium.webdriver.remote.webdriver import WebDriver
 from ._detector_utils import _find_elements_by_computed_style, _get_html_from_element, _is_element_interactive, _find_cursor_is_pointer, _find_elements_by_anchors
-from .utils import _is_element_clickable
+from .utils import vprint, _is_element_clickable
 import json
 
 class ChatbotDetector:
@@ -20,37 +20,37 @@ class ChatbotDetector:
         candidate = None
 
         # The first starategy is to find elements by anchors
-        s1_elements = _find_elements_by_anchors(driver)
+        s1_elements = _find_elements_by_anchors(driver, quiet)
         if len(s1_elements) > 0:
-            s1_elements_clickable = [_is_element_clickable(el, driver) for el in s1_elements]
+            s1_elements_clickable = [_is_element_clickable(el, driver, quiet) for el in s1_elements]
             s1_counts = s1_elements_clickable.count(True)
             if s1_counts == 1:
-                if not quiet: print("The candidate chatbot launcher element found by the first starategy")              
+                vprint("The candidate chatbot launcher element found by the first strategy", quiet)              
                 stats["s1_candidates"] = 1
                 candidate = s1_elements[s1_elements_clickable.index(True)]
             if s1_counts > 1:
-                if not quiet: print("Multiple candidate chatbot launcher elements found by the first starategy. The solver has to be launched.")
+                vprint("Multiple candidate chatbot launcher elements found by the first starategy. The solver has to be launched.", quiet)
                 stats["s1_candidates"] = s1_counts
             if s1_counts == 0:
-                if not quiet: print("The first starategy found elements but none are clickable.")
+                vprint("The first starategy found elements but none are clickable.", quiet)
 
         else:
-            if not quiet: print("The first starategy found no elements.")
+            vprint("The first starategy found no elements.", quiet)
 
-        s2_elements = _find_elements_by_computed_style(driver)
+        s2_elements = _find_elements_by_computed_style(driver, quiet)
         if len(s2_elements) > 0:
-                s2_elements_clickable = [_is_element_clickable(el, driver) for el in s2_elements]
+                s2_elements_clickable = [_is_element_clickable(el, driver, quiet) for el in s2_elements]
                 s2_counts = s2_elements_clickable.count(True)
                 if s2_counts == 1:
-                    if not quiet: print("The candidate chatbot launcher element found by the second starategy")              
+                    vprint("The candidate chatbot launcher element found by the second starategy", quiet)              
                     stats["s2_candidates"] = 1
                     candidate = s2_elements[s2_elements_clickable.index(True)]
                 if s2_counts > 1:
-                    if not quiet: print("Multiple candidate chatbot launcher elements found by the second starategy. The solver has to be launched.")
+                    vprint("Multiple candidate chatbot launcher elements found by the second starategy. The solver has to be launched.", quiet)
                     stats["s2_candidates"]= s2_counts
                 if s2_counts == 0:
-                    if not quiet: print("The first starategy found elements but none are clickable.")
+                    vprint("The first starategy found elements but none are clickable.", quiet)
         else:
-                if not quiet: print("The first starategy found no elements.")
+                vprint("The first starategy found no elements.", quiet)
 
         return candidate, json.dumps(stats)
