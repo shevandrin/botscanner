@@ -129,6 +129,7 @@ test.py
 *.ipynb
 *.csv
 !data/*.csv
+*.txt
 
 # Auto-generated files
 *.egg-info/
