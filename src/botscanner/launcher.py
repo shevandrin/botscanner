@@ -4,6 +4,7 @@ from selenium import webdriver
 from ._launcher_utils import _prepare_url, _handle_cookie_consent
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
+from .jstools.shadow_dom import SHADOW_DOM_OVERRIDE_JS
 
 
 def check_ip():
@@ -22,6 +23,13 @@ def check_ip():
     except Exception as e:
         print(f"An unexpected error occurred in check_ip: {e}")
         return None
+
+
+def install_shadow_dom_override(driver):
+    driver.execute_cdp_cmd(
+        "Page.addScriptToEvaluateOnNewDocument",
+        {"source": SHADOW_DOM_OVERRIDE_JS}
+    )
 
 
 def launch_page(url="https://www.google.com/", keep_open=True):
@@ -44,6 +52,7 @@ def launch_page(url="https://www.google.com/", keep_open=True):
         chrome_options.add_experimental_option("detach", True)
 
     driver = webdriver.Chrome(options=chrome_options)
+    install_shadow_dom_override(driver)
     driver.get(url)
 
     WebDriverWait(driver, 10).until(
