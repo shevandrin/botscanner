@@ -4,6 +4,8 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 from .patterns import CORE_ANCHORS_PATTERNS
 from .utils import vprint
+from .jstools.wait_iframes import WAIT_FOR_ALL_IFRAMES_JS
+from selenium.common.exceptions import WebDriverException
 
 
 def test_function():
@@ -276,3 +278,59 @@ def _find_cursor_is_pointer(container_element: WebElement, driver: WebDriver):
         print(f"  - An error occurred during the recursive search script: {e}")
         return {'foundElement': None, 'exploredPath': []}
 
+
+def _finalize_shadow_result(result, shadow_results, quiet):
+    shadow_data = shadow_results[0]
+
+    result["success"] = True
+    result["html"] = shadow_data.get("shadowHTML", "")
+    result["element_info"] = shadow_data.get("hostElement", {})
+
+    vprint("Chatbot detected via shadow DOM", quiet)
+    return result
+
+
+def _find_iframes(driver: WebDriver, result: dict, quiet):
+    candidates = []
+
+    iframe_data = driver.execute_async_script(WAIT_FOR_ALL_IFRAMES_JS, 20_000)
+
+    if not iframe_data or not iframe_data.get("found"):
+        result["error"] = "No iframes detected after launcher click"
+        return result, candidates
+        
+    iframes = iframe_data.get("iframes", [])
+    vprint(f"Detected {len(iframes)} iframe(s)", quiet)
+
+    for idx, iframe in enumerate(iframes):
+        iframe_element = None
+
+        try:
+            vprint(f"Processing iframe {idx}...", quiet)
+
+            iframe_element = None
+                     
+            if iframe.get("id"):
+                try:
+                    iframe_element = driver.find_element(By.ID, iframe["id"])
+                except WebDriverException:
+                    iframe_element = None
+            
+            if iframe_element == None:
+                continue
+
+            html = iframe_element.get_attribute('outerHTML')
+
+            candidates.append({
+                "index": idx,
+                "element": iframe_element,
+                "html": html
+            })
+
+        except WebDriverException:
+            vprint("Error: Cross-origin or detached iframe", quiet)
+
+    if not candidates:
+        result["error"] = "Iframes detected but none were accessible (same-origin)"
+
+    return result, candidates

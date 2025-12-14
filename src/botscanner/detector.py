@@ -1,7 +1,13 @@
-from selenium.webdriver.remote.webdriver import WebDriver
-from ._detector_utils import _find_elements_by_computed_style, _get_html_from_element, _is_element_interactive, _find_cursor_is_pointer, _find_elements_by_anchors
+from selenium.webdriver.remote.webdriver import WebDriver, WebElement
+from selenium.webdriver.common.by import By
+from ._detector_utils import _find_elements_by_computed_style, _get_html_from_element, _is_element_interactive, _find_cursor_is_pointer, _find_elements_by_anchors, _finalize_shadow_result, _find_iframes
 from .utils import vprint, _is_element_clickable
 import json
+from .jstools.shadow_search_js import SHADOW_SEARCH_JS
+from .evaluators.eval_iframe_chatbot_window import _evaluate_iframe_candidate
+
+
+
 
 class ChatbotDetector:
     """Handles detection of chatbot widget on web pages."""
@@ -55,7 +61,7 @@ class ChatbotDetector:
                 s2_elements_clickable = [_is_element_clickable(el, driver, quiet) for el in s2_elements]
                 s2_counts = s2_elements_clickable.count(True)
                 for idx, el in enumerate(s2_elements):
-                    candidates_log["strategy_2_computed_style"].append({
+                    candidates_log["strategy_2"].append({
                     "index": idx,
                     "clickable": s2_elements_clickable[idx],
                     "html": el.get_attribute('outerHTML'),
@@ -75,3 +81,75 @@ class ChatbotDetector:
                 vprint("The first starategy found no elements.", quiet)
 
         return candidate, json.dumps(stats), candidates_log
+
+
+    def capture_chatbot_window(self, driver: WebDriver, launcher_element: WebElement, quiet: bool = True) -> dict:
+        """
+        Clicks the chatbot launcher element and captures the opened chatbot widget window.
+        Handles iframes, shadow DOM, and regular DOM elements.
+        
+        Args:
+            driver: The active Selenium WebDriver instance
+            launcher_element: The element that opens the chatbot widget
+            quiet: If True, suppress verbose output
+            
+        Returns:
+            Dictionary containing the chatbot window details and HTML
+        """
+        result = {
+        "success": False,
+        "window_type": "shadow_dom",
+        "detection_method": "iframe + shadow_dom",
+        "html": None,
+        "element_info": {},
+        "error": None
+        }
+
+        try:
+            vprint("Clicking chatbot launcher...", quiet)
+            launcher_element.click()
+
+            driver.implicitly_wait(2)
+
+            vprint("Scanning main document for chatbot (shadow DOM)...", quiet)
+            with open('dom.txt', 'w', encoding='utf-8') as f:
+                f.write(driver.page_source)
+
+            # 1Main document
+            shadow_results = driver.execute_script(SHADOW_SEARCH_JS)
+            if shadow_results:
+                return _finalize_shadow_result(result, shadow_results, quiet)
+
+            # Same-origin iframes
+            result, candidates = _find_iframes(driver, result, quiet)
+
+            evaluated = [_evaluate_iframe_candidate(c) for c in candidates]
+
+            evaluated.sort(key=lambda c: c["score"], reverse=True)
+            target = evaluated[0]
+
+            try:
+                vprint(f"Best iframe candidate index: {target.get('index')} with score {target.get('score')}", quiet)
+                target_element = target.get("element")
+                try:
+                    target_element.screenshot("iframe_element.png")
+                except:
+                    vprint("Failed to capture screenshot of the best iframe candidate element.", quiet)
+                driver.switch_to.frame(target_element)
+                try:
+                    driver.save_screenshot("iframe_content.png")
+                    html = driver.page_source
+                    with open('iframe_dom.txt', 'w', encoding='utf-8') as f:
+                        f.write(html)
+                    result["success"] = True
+                    result['html'] = html
+                except:
+                    result["error"] = "Failed to capture HTML from the best iframe candidate."
+                driver.switch_to.default_content()
+            except:
+                result["error"] = "Failed to switch to the best iframe candidate."
+
+        except Exception as e:
+            result["error"] = str(e)
+
+        return result
