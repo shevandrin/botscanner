@@ -100,6 +100,7 @@ def _handle_cookie_consent(driver: WebDriver, quiet: bool = True):
     vprint("  - No cookie consent banner found, or it was already handled.", quiet)
 
 
+# TODO: Seems unused, consider removing?
 def _click_element_from_data(driver: WebDriver, element_data: dict):
     """
     Intelligently clicks an element based on the data returned by the JS script.
