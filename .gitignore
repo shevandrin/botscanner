@@ -130,6 +130,7 @@ test.py
 *.csv
 !data/*.csv
 *.txt
+*.png
 
 # Auto-generated files
 *.egg-info/
