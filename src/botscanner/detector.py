@@ -5,6 +5,8 @@ from .utils import vprint, _is_element_clickable
 import json
 from .jstools.shadow_search_js import SHADOW_SEARCH_JS
 from .evaluators.eval_iframe_chatbot_window import _evaluate_iframe_candidate
+from .selectors.select_anchor_chatbot_widget import select_anchor_chatbot_widget
+import time
 
 
 
@@ -38,6 +40,7 @@ class ChatbotDetector:
             for idx, el in enumerate(s1_elements):
                 candidates_log["strategy_1"].append({
                     "index": idx,
+                    "element": el,
                     "clickable": s1_elements_clickable[idx],
                     "html": el.get_attribute('outerHTML'),
                     "tag": el.tag_name,
@@ -46,7 +49,7 @@ class ChatbotDetector:
             if s1_counts == 1:
                 vprint("The candidate chatbot launcher element found by the first strategy", quiet)              
                 stats["s1_candidates"] = 1
-                candidate = s1_elements[s1_elements_clickable.index(True)]
+                # candidate = s1_elements[s1_elements_clickable.index(True)]
             if s1_counts > 1:
                 vprint("Multiple candidate chatbot launcher elements found by the first starategy. The solver has to be launched.", quiet)
                 stats["s1_candidates"] = s1_counts
@@ -63,6 +66,7 @@ class ChatbotDetector:
                 for idx, el in enumerate(s2_elements):
                     candidates_log["strategy_2"].append({
                     "index": idx,
+                    "element": el,
                     "clickable": s2_elements_clickable[idx],
                     "html": el.get_attribute('outerHTML'),
                     "tag": el.tag_name,
@@ -71,14 +75,33 @@ class ChatbotDetector:
                 if s2_counts == 1:
                     vprint("The candidate chatbot launcher element found by the second starategy", quiet)              
                     stats["s2_candidates"] = 1
-                    candidate = s2_elements[s2_elements_clickable.index(True)]
+                    # candidate = s2_elements[s2_elements_clickable.index(True)]
                 if s2_counts > 1:
                     vprint("Multiple candidate chatbot launcher elements found by the second starategy. The solver has to be launched.", quiet)
                     stats["s2_candidates"]= s2_counts
                 if s2_counts == 0:
-                    vprint("The first starategy found elements but none are clickable.", quiet)
+                    vprint("The second starategy found elements but none are clickable.", quiet)
         else:
-                vprint("The first starategy found no elements.", quiet)
+                vprint("The second starategy found no elements.", quiet)
+        
+        evaluated_candidates = select_anchor_chatbot_widget(candidates_log, quiet)
+        print(evaluated_candidates)
+
+        for strategy in ["strategy_1", "strategy_2"]:
+            vprint(strategy, quiet)
+            if strategy in evaluated_candidates and evaluated_candidates[strategy]:
+                for cand in evaluated_candidates[strategy]:
+                    score = cand.get('score')
+                    if score > 0:
+                        vprint(f"Candidate Score: {score}", quiet)
+                        vprint(f"Candidate HTML: {cand.get('html')}", quiet)
+
+        if len(evaluated_candidates.get("strategy_1", [])) > 0:
+            candidates = evaluated_candidates.get("strategy_1", [])
+            candidate = max(candidates, key=lambda c: c.get('score', 0)).get('element')
+        elif len(evaluated_candidates.get("strategy_2", [])) > 0:
+            candidates = evaluated_candidates.get("strategy_2", [])
+            candidate = max(candidates, key=lambda c: c.get('score', 0)).get('element')
 
         return candidate, json.dumps(stats), candidates_log
 
@@ -132,6 +155,8 @@ class ChatbotDetector:
                 vprint(f"Best iframe candidate index: {target.get('index')} with score {target.get('score')}", quiet)
                 target_element = target.get("element")
                 try:
+                    # TODO: Experiment with delay, the chatbot window may take time to load
+                    time.sleep(2)
                     target_element.screenshot("iframe_element.png")
                 except:
                     vprint("Failed to capture screenshot of the best iframe candidate element.", quiet)

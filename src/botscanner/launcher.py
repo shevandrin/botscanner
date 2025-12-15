@@ -5,6 +5,7 @@ from ._launcher_utils import _prepare_url, _handle_cookie_consent
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from .jstools.shadow_dom import SHADOW_DOM_OVERRIDE_JS
+import time
 
 
 def check_ip():
@@ -60,5 +61,5 @@ def launch_page(url="https://www.google.com/", keep_open=True):
     )
 
     _handle_cookie_consent(driver)
-
+    time.sleep(10)
     return driver

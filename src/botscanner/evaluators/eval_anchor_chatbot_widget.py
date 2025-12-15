@@ -7,6 +7,14 @@ def _evaluate_anchor_candidate(candidate: dict) -> dict:
     if "chat" in html:
         score += 3
         evidence.append("keyword 'chat'")
+
+    if "button" in html:
+        score += 1
+        evidence.append("keyword 'button'")
+
+    if "widget" in html:
+        score += 1
+        evidence.append("keyword 'widget'")
     
     if not candidate['clickable']:
         score = 0
