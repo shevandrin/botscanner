@@ -20,7 +20,7 @@ def run_scan(url: str, output_dir: Path | None = None, quiet: bool = True):
 
     driver = launch_page(url)
 
-    outcome_manager = OutcomeWriter(output_dir, url)
+    outcome_manager = OutcomeWriter(url, output_dir)
 
     # detector = ChatbotDetector(outcome_manager)
 
