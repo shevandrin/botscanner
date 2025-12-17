@@ -33,20 +33,27 @@ def install_shadow_dom_override(driver):
     )
 
 
-def launch_page(url="https://www.google.com/", keep_open=True):
+def launch_page(
+        url: str = "https://www.google.com/",
+        keep_open: bool = True,
+        hadle_cookies: bool = True,
+        wait_seconds: int = 10,
+        ):
     """Launches a Chrome browser to the specified URL.
 
     Args:
         url (str): The URL to open.
         keep_open (bool): If True, the browser window will remain open
             after the function finishes. Defaults to True.
+        hadle_cookies (bool): If True, handle cookie consent. Defaults to True.
+        wait_seconds (int): Number of seconds to wait after loading the page. Defaults to 10.
 
     Returns:
         driver: Selenium Chrome webdriver.
     """
     ip = check_ip()
     url = _prepare_url(url)
-    print("Launcher ", url, ". Current ip address is ", ip)
+    print(f"Launching browser to {url} | Current public IP: {ip or 'Unable to retrieve'}")
 
     chrome_options = Options()
     if keep_open:
@@ -60,6 +67,7 @@ def launch_page(url="https://www.google.com/", keep_open=True):
         lambda d: d.execute_script("return document.readyState") == "complete"
     )
 
-    _handle_cookie_consent(driver)
-    time.sleep(10)
+    if hadle_cookies: _handle_cookie_consent(driver)
+    
+    time.sleep(wait_seconds)
     return driver
