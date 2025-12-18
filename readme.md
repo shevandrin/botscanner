@@ -7,7 +7,7 @@ A Master's Thesis Project for the systematic discovery, identification, and stru
 
 Prerequisites:
 
-* Python (3.x)
+* Python 3.9 or higher
 * A  ChromeDriver. Ensure your ChromeDriver is correctly installed and accessible in your system's PATH
 
 ```Bash
