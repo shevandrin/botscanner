@@ -46,3 +46,9 @@ Issues = "https://github.com/shevandrin/botscanner/issues"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"botscanner.data" = ["*.yaml", "*.csv"]
+
