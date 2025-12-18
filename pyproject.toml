@@ -32,7 +32,10 @@ dependencies = [
     "selenium",
     "webdriver-manager",
     "beautifulsoup4",
-    "requests"
+    "requests",
+    "pyyaml",
+    "python-dotenv",
+    "pandas"
 ]
 
 [project.urls]

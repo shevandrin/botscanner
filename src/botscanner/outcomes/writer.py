@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 import json
 import csv
 import shutil
+from typing import Optional
 
 
 class OutcomeWriter:
@@ -11,7 +12,7 @@ class OutcomeWriter:
     It organizes botstanner outcomes.
     """
 
-    def __init__(self, url: str, base_dir: Path | None = None):
+    def __init__(self, url: str, base_dir: Optional[Path] = None):
         self.base_dir = Path(base_dir or "results")
         self.url = url
         self.timestamp = datetime.now()

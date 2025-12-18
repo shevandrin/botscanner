@@ -1,10 +1,11 @@
 from pathlib import Path
+from typing import Optional
 from botscanner.launcher import launch_page
 from botscanner.detector import ChatbotDetector
 from botscanner.outcomes.writer import OutcomeWriter
 
 
-def run_scan(url: str, output_dir: Path | None = None, quiet: bool = True):
+def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
     """
     Scan a URL for the presence of chatbot widget and write results to an output directory.
     This function launches a web browser, initializes a chatbot detector, discovers any chatbots on the page, and writes the findings to the specified output directory.
