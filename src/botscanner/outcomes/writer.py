@@ -64,6 +64,28 @@ class OutcomeWriter:
             dst.relative_to(self.scan_dir)
         )
 
+    def save_json(self, name: str, records: list[dict]):
+        """
+        Save structured JSON data into result/ folder.
+        Optionally enrich it with paths to DOM artefacts.
+
+        Args:
+            name: file name without .json (e.g. 's1_chatbot_anchors')
+            data: JSON-serializable dictionary
+            dom_refs: mapping logical_key -> dom artefact name
+                    e.g. { "best_candidate": "s1_candidate_0" }
+        """
+
+        if not isinstance(records, list):
+            raise TypeError("save_json expects a list of dictionaries")
+    
+
+        path = self.result_dir / f"{name}.json"
+        path.write_text(
+            json.dumps(records, indent=2),
+            encoding="utf-8"
+        )
+
 
     def finalize(self, outcome: dict):
         self._write_outcome(outcome)
