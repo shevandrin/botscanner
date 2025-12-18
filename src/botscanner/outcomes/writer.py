@@ -87,6 +87,31 @@ class OutcomeWriter:
         )
 
 
+    def save_element_screenshot(self, name: str, element):
+        """
+        Save screenshot of a Selenium WebElement into screenshots/.
+        """
+
+        path = self.screenshots_dir / f"{name}.png"
+        element.screenshot(str(path))
+
+        self._artefacts["screenshots"][name] = str(
+            path.relative_to(self.scan_dir)
+        )
+
+    def save_page_screenshot(self, name: str, driver):
+        """
+        Save screenshot of current Selenium driver context.
+        """
+
+        path = self.screenshots_dir / f"{name}.png"
+        driver.save_screenshot(str(path))
+
+        self._artefacts["screenshots"][name] = str(
+            path.relative_to(self.scan_dir)
+        )
+
+
     def finalize(self, outcome: dict):
         self._write_outcome(outcome)
         self._write_artefacts()
