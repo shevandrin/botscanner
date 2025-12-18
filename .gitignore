@@ -134,3 +134,6 @@ test.py
 
 # Auto-generated files
 *.egg-info/
+
+# Bot Scanner results files
+results/
