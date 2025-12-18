@@ -13,6 +13,8 @@ import time
 
 class ChatbotDetector:
     """Handles detection of chatbot widget on web pages."""
+    def __init__(self, outcome_writer):
+        self.outcome_writer = outcome_writer
 
     def discover_chatbot(self, driver: WebDriver, quiet: bool = True) -> None:
         """
@@ -21,6 +23,8 @@ class ChatbotDetector:
         Returns:
             (candidate_element_or_None, stats_json)
         """
+        vprint("Discovering chatbot launcher elements (anchors)...", quiet)
+
         stats = {
             "s1_candidates": 0
             ,"s2_candidates": 0
@@ -45,7 +49,11 @@ class ChatbotDetector:
                     "html": el.get_attribute('outerHTML'),
                     "tag": el.tag_name,
                     "text": el.text[:100] if el.text else ""  # First 100 chars
-            })
+                })
+                if self.outcome_writer:
+                    path_dom = f"s1_anchor_candidate_{idx}"
+                    self.outcome_writer.save_dom(path_dom, el.get_attribute('outerHTML'))
+                    candidates_log["strategy_1"][-1]["dom_path"] = path_dom
             if s1_counts == 1:
                 vprint("The candidate chatbot launcher element found by the first strategy", quiet)              
                 stats["s1_candidates"] = 1
@@ -90,6 +98,13 @@ class ChatbotDetector:
         for strategy in ["strategy_1", "strategy_2"]:
             vprint(strategy, quiet)
             if strategy in evaluated_candidates and evaluated_candidates[strategy]:
+                if self.outcome_writer:
+                    # Create JSON-serializable version (remove WebElement objects)
+                    json_safe = [
+                        {k: v for k, v in cand.items() if k != 'element'}
+                        for cand in evaluated_candidates[strategy]
+                    ]
+                    self.outcome_writer.save_json(f"evaluated_{strategy}_candidates", json_safe)
                 for cand in evaluated_candidates[strategy]:
                     score = cand.get('score')
                     if score > 0:

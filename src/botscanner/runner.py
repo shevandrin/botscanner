@@ -23,6 +23,8 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
 
     outcome_manager = OutcomeWriter(url, output_dir)
 
-    # detector = ChatbotDetector(outcome_manager)
+    detector = ChatbotDetector(outcome_manager)
+
+    detector.discover_chatbot(driver, quiet=quiet)
 
     return None
