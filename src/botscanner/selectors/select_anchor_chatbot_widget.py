@@ -12,5 +12,4 @@ def select_anchor_chatbot_widget(candidates: dict, quiet: bool = True) -> dict:
             for candidate in candidates[strategy]:
                 candidates[strategy][candidates[strategy].index(candidate)] = _evaluate_anchor_candidate(candidate)
             candidates[strategy].sort(key=lambda x: x['score'], reverse=True)
-    print("outcome from selector:", candidates)
     return candidates

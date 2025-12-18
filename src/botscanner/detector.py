@@ -93,7 +93,6 @@ class ChatbotDetector:
                 vprint("The second starategy found no elements.", quiet)
         
         evaluated_candidates = select_anchor_chatbot_widget(candidates_log, quiet)
-        print(evaluated_candidates)
 
         for strategy in ["strategy_1", "strategy_2"]:
             vprint(strategy, quiet)
