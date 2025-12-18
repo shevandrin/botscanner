@@ -149,8 +149,9 @@ class ChatbotDetector:
             driver.implicitly_wait(2)
 
             vprint("Scanning main document for chatbot (shadow DOM)...", quiet)
-            with open('dom.txt', 'w', encoding='utf-8') as f:
-                f.write(driver.page_source)
+            page_html = driver.page_source
+            if self.outcome_writer:
+                self.outcome_writer.save_dom("start_page_dom", page_html)
 
             # 1Main document
             shadow_results = driver.execute_script(SHADOW_SEARCH_JS)
@@ -170,16 +171,18 @@ class ChatbotDetector:
                 target_element = target.get("element")
                 try:
                     # TODO: Experiment with delay, the chatbot window may take time to load
-                    time.sleep(2)
-                    target_element.screenshot("iframe_element.png")
+                    time.sleep(15)
+                    if self.outcome_writer:
+                        self.outcome_writer.save_element_screenshot("chatbot_widget_window", target_element)
                 except:
                     vprint("Failed to capture screenshot of the best iframe candidate element.", quiet)
                 driver.switch_to.frame(target_element)
                 try:
-                    driver.save_screenshot("iframe_content.png")
+                    if self.outcome_writer:
+                        self.outcome_writer.save_page_screenshot("start_page_with_chatbot_window", driver)
                     html = driver.page_source
-                    with open('iframe_dom.txt', 'w', encoding='utf-8') as f:
-                        f.write(html)
+                    if self.outcome_writer:
+                        self.outcome_writer.save_dom("iframe_dom", html)
                     result["success"] = True
                     result['html'] = html
                 except:
