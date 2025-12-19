@@ -29,4 +29,4 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
 
     detector.capture_chatbot_window(driver, candidate, quiet=quiet)
 
-    return None
+    return driver
