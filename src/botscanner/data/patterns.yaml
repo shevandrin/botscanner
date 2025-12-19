@@ -34,3 +34,7 @@ detection:
         - "kore-chat-window"
       area-label:
         - "chat-window-section"
+  shadow_dom_indicators:
+    - "chatbot"
+    - "chat"
+    - "bot"

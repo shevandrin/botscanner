@@ -1,25 +1,35 @@
 SHADOW_SEARCH_JS = r"""
-(function () {
+(function (KEYWORDS) {
     const results = [];
-    const KEYWORDS = ['chat', 'widget', 'bot', 'support', 'conversation'];
 
-    document.querySelectorAll('iframe').forEach(iframe => {
-        const id = (iframe.id || '').toLowerCase();
-        const title = (iframe.title || '').toLowerCase();
-        const src = (iframe.src || '').toLowerCase();
+    function traverse(root) {
+        if (!root) return;
 
-        if (KEYWORDS.some(k => id.includes(k) || title.includes(k) || src.includes(k))) {
-            results.push({
-                type: 'iframe',
-                id: iframe.id || null,
-                title: iframe.title || null,
-                class: iframe.className || null,
-                src: iframe.src || null,
-                cross_origin: true
-            });
+        const elements = root.querySelectorAll('*');
+        for (const el of elements) {
+            const cls = (el.className || '').toString().toLowerCase();
+            const id = (el.id || '').toLowerCase();
+            const aria = (el.getAttribute && el.getAttribute('aria-label') || '').toLowerCase();
+
+            let score = 0;
+            for (const k of KEYWORDS) {
+                if (cls.includes(k)) score += 2;
+                if (id.includes(k)) score += 2;
+                if (aria.includes(k)) score += 3;
+            }
+
+            if (score > 0) {
+                el.__chatbot_score = score;
+                results.push(el);
+            }
+
+            if (el.shadowRoot) {
+                traverse(el.shadowRoot);
+            }
         }
-    });
+    }
 
+    traverse(document);
     return results;
-})();
+})
 """

@@ -7,6 +7,7 @@ class SimpleDOMChatbotWindowFinder(BaseChatbotWindowFinder):
     name = "simple_dom"
 
     def find(self, driver, quiet):
+        print("searching simple dom chatbot windows...")
         elements = _find_windows_candidates_by_framework(driver, quiet)
         return [
             ChatbotWindowCandidate(
