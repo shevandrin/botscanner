@@ -9,6 +9,7 @@ from .selectors.select_anchor_chatbot_widget import select_anchor_chatbot_widget
 import time
 from .finders.SimpleDOMChatbotWindowFinder import SimpleDOMChatbotWindowFinder
 from .finders.ShadowDOMChatbotWindowFinder import ShadowDOMChatbotWindowFinder
+from .finders.IframeChatbotWindowFinder import IframeChatbotWindowFinder
 
 
 
@@ -151,11 +152,12 @@ class ChatbotDetector:
             driver.implicitly_wait(15)
 
             finders = [SimpleDOMChatbotWindowFinder(),
-                       ShadowDOMChatbotWindowFinder()]
+                       ShadowDOMChatbotWindowFinder(),
+                       IframeChatbotWindowFinder()]
             cands = []
 
             for finder in finders:
-                found = finder.find(driver, quiet)
+                found = finder.find(driver, quiet = False)
                 cands.extend(found)
             print(cands)
 

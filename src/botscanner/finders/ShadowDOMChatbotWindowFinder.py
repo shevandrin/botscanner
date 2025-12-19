@@ -15,7 +15,7 @@ class ShadowDOMChatbotWindowFinder(BaseChatbotWindowFinder):
         return [
                 ChatbotWindowCandidate(
                     source="dom",
-                    context="main",
+                    context="shadow_dom",
                     element=el,
                     metadata={"html": el.get_attribute("outerHTML")}
                 )
