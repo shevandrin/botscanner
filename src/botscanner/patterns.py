@@ -37,3 +37,4 @@ def load_patterns():
 PATTERNS = load_patterns()
 COOKIE_PATTERNS = PATTERNS.get('detection', {}).get('cookie_consent', {})
 CORE_ANCHORS_PATTERNS = PATTERNS.get('detection', {}).get('core_anchors', {})
+CHATBOT_FRAMEWORKS_PATTERNS = PATTERNS.get('detection', {}).get('chatbot_frameworks', {})

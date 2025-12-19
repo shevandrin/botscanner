@@ -28,3 +28,9 @@ detection:
   core_anchors:
     chatbot_anchors:
       - "chat"
+  chatbot_frameworks:
+    "kore.ai":
+      class:
+        - "kore-chat-window"
+      area-label:
+        - "chat-window-section"
