@@ -1,6 +1,6 @@
 from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.common.by import By
-from ._detector_utils import _find_elements_by_computed_style, _get_html_from_element, _is_element_interactive, _find_cursor_is_pointer, _find_elements_by_anchors, _finalize_shadow_result, _find_iframes
+from ._detector_utils import _find_elements_by_computed_style, _get_html_from_element, _is_element_interactive, _find_cursor_is_pointer, _find_elements_by_anchors, _find_iframes
 from .utils import vprint, _is_element_clickable
 import json
 from .jstools.shadow_search_js import SHADOW_SEARCH_JS
@@ -163,11 +163,6 @@ class ChatbotDetector:
             page_html = driver.page_source
             if self.outcome_writer:
                 self.outcome_writer.save_dom("start_page_dom", page_html)
-
-            # 1Main document
-            shadow_results = driver.execute_script(SHADOW_SEARCH_JS)
-            if shadow_results:
-                return _finalize_shadow_result(result, shadow_results, quiet)
 
             # Same-origin iframes
             result, candidates = _find_iframes(driver, result, quiet)

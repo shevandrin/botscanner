@@ -160,17 +160,6 @@ def _find_cursor_is_pointer(container_element: WebElement, driver: WebDriver):
         return {'foundElement': None, 'exploredPath': []}
 
 
-def _finalize_shadow_result(result, shadow_results, quiet):
-    shadow_data = shadow_results[0]
-
-    result["success"] = True
-    result["html"] = shadow_data.get("shadowHTML", "")
-    result["element_info"] = shadow_data.get("hostElement", {})
-
-    vprint("Chatbot detected via shadow DOM", quiet)
-    return result
-
-
 def _find_iframes(driver: WebDriver, result: dict, quiet):
     candidates = []
 
