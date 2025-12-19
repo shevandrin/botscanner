@@ -7,6 +7,7 @@ from .jstools.shadow_search_js import SHADOW_SEARCH_JS
 from .evaluators.eval_iframe_chatbot_window import _evaluate_iframe_candidate
 from .selectors.select_anchor_chatbot_widget import select_anchor_chatbot_widget
 import time
+from .finders.SimpleDOMChatbotWindowFinder import SimpleDOMChatbotWindowFinder
 
 
 
@@ -146,7 +147,15 @@ class ChatbotDetector:
             vprint("Clicking chatbot launcher...", quiet)
             launcher_element.click()
 
-            driver.implicitly_wait(2)
+            driver.implicitly_wait(15)
+
+            finders = [SimpleDOMChatbotWindowFinder()]
+            cands = []
+
+            for finder in finders:
+                found = finder.find(driver, quiet)
+                cands.extend(found)
+            print(cands)
 
             vprint("Scanning main document for chatbot (shadow DOM)...", quiet)
             page_html = driver.page_source
@@ -171,7 +180,7 @@ class ChatbotDetector:
                 target_element = target.get("element")
                 try:
                     # TODO: Experiment with delay, the chatbot window may take time to load
-                    time.sleep(15)
+                    time.sleep(2)
                     if self.outcome_writer:
                         self.outcome_writer.save_element_screenshot("chatbot_widget_window", target_element)
                 except:
