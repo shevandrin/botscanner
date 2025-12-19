@@ -15,8 +15,6 @@ def _find_windows_candidates_by_framework(driver, quiet=True):
 
     frameworks = CHATBOT_FRAMEWORKS_PATTERNS
 
-    print(frameworks)
-
     for framework_name, selectors in frameworks.items():
         vprint(f"Scanning for chatbot framework: {framework_name}", quiet)
 
