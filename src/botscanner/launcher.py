@@ -36,7 +36,7 @@ def install_shadow_dom_override(driver):
 def launch_page(
         url: str = "https://www.google.com/",
         keep_open: bool = True,
-        hadle_cookies: bool = True,
+        handle_cookies: bool = True,
         wait_seconds: int = 10,
         ):
     """Launches a Chrome browser to the specified URL.
@@ -59,15 +59,19 @@ def launch_page(
     if keep_open:
         chrome_options.add_experimental_option("detach", True)
 
-    driver = webdriver.Chrome(options=chrome_options)
-    install_shadow_dom_override(driver)
-    driver.get(url)
+    try:
+        driver = webdriver.Chrome(options=chrome_options)
+        install_shadow_dom_override(driver)
+        driver.get(url)
 
-    WebDriverWait(driver, 10).until(
-        lambda d: d.execute_script("return document.readyState") == "complete"
-    )
+        WebDriverWait(driver, 10).until(
+            lambda d: d.execute_script("return document.readyState") == "complete"
+        )
+    except Exception as e:
+        print(f"Error launching browser: {e}")
+        return None
 
-    if hadle_cookies: _handle_cookie_consent(driver)
+    if handle_cookies: _handle_cookie_consent(driver)
     
     time.sleep(wait_seconds)
     return driver
