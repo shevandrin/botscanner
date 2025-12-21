@@ -53,3 +53,17 @@ class CandidateManager:
         if not valid:
             return None
         return max(valid, key=lambda c: c.score)
+    
+class CandidateManagerAnchor(CandidateManager):
+        
+        def select_candidate(self, min_score: int = 1):
+            valid_s1 = [c for c in self._candidates if c.score >= min_score and c.strategy == "SimpleDOMChatbotAnchorFinder"]
+            if valid_s1:
+                valid_s1.sort(key=lambda x: x.score, reverse=True)
+                return valid_s1[0]
+        
+            valid_s2 = [c for c in self._candidates if c.score >= min_score and c.strategy == "ComputedStyleChatbotAnchorFinder"]
+            if valid_s2:
+                valid_s2.sort(key=lambda x: x.score, reverse=True)
+                return valid_s2[0]
+            return None

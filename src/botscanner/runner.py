@@ -25,7 +25,7 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
 
     detector = ChatbotDetector(outcome_manager)
 
-    candidate, stats, candidates_log = detector.discover_chatbot(driver, quiet=quiet)
+    candidate = detector.discover_chatbot(driver, quiet=quiet)
 
     detector.capture_chatbot_window(driver, candidate, quiet=quiet)
 
