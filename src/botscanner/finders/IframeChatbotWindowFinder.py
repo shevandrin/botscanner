@@ -1,5 +1,5 @@
 from .BaseChatbotWindowFinder import BaseChatbotWindowFinder
-from ..models.ChatbotWindowCandidate import ChatbotWindowCandidate
+from ..models.BaseCandidate import ChatbotWindowCandidate
 from .iframe import _find_iframe_chatbot_windows
 
 
@@ -11,9 +11,11 @@ class IframeChatbotWindowFinder(BaseChatbotWindowFinder):
         elements = _find_iframe_chatbot_windows(driver, quiet)
         return [
             ChatbotWindowCandidate(
+                index=-1,
                 source="iframe",
                 context="iframe",
                 element=el,
-                metadata={"html": el.get_attribute("outerHTML")}
+                tag=el.tag_name,
+                html=el.get_attribute("outerHTML")
             ) for el in elements            
         ]

@@ -1,5 +1,5 @@
 from .BaseChatbotWindowFinder import BaseChatbotWindowFinder
-from ..models.ChatbotWindowCandidate import ChatbotWindowCandidate
+from ..models.BaseCandidate import ChatbotWindowCandidate
 from .shadowDOM import _find_windows_candidates_as_shadowdom
 
 
@@ -14,10 +14,12 @@ class ShadowDOMChatbotWindowFinder(BaseChatbotWindowFinder):
 
         return [
                 ChatbotWindowCandidate(
+                    index=-1,
                     source="dom",
                     context="shadow_dom",
                     element=el,
-                    metadata={"html": el.get_attribute("outerHTML")}
+                    tag=el.tag_name,
+                    html=el.get_attribute("outerHTML")
                 )
                 for el in elements
             ]

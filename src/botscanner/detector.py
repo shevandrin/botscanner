@@ -10,6 +10,7 @@ import time
 from .finders.SimpleDOMChatbotWindowFinder import SimpleDOMChatbotWindowFinder
 from .finders.ShadowDOMChatbotWindowFinder import ShadowDOMChatbotWindowFinder
 from .finders.IframeChatbotWindowFinder import IframeChatbotWindowFinder
+from .models.CandidateManager import CandidateManager
 
 
 
@@ -149,22 +150,32 @@ class ChatbotDetector:
             vprint("Clicking chatbot launcher...", quiet)
             launcher_element.click()
 
-            driver.implicitly_wait(15)
+            driver.implicitly_wait(30)
 
             finders = [SimpleDOMChatbotWindowFinder(),
                        ShadowDOMChatbotWindowFinder(),
                        IframeChatbotWindowFinder()]
             cands = []
+            cand_manager = CandidateManager(driver, self.outcome_writer, quiet)
+            print(cand_manager)
 
             for finder in finders:
-                found = finder.find(driver, quiet = False)
+                found = finder.find(driver, quiet = True)
                 cands.extend(found)
-            print(cands)
+                cand_manager.add_candidates(found)
+            print("Candidates in CandidateManager:")
+            print(cand_manager._candidates)
+            cand_manager.process()
+
 
             vprint("Scanning main document for chatbot (shadow DOM)...", quiet)
             page_html = driver.page_source
             if self.outcome_writer:
                 self.outcome_writer.save_dom("start_page_dom", page_html)
+
+            time.sleep(2)
+            if self.outcome_writer:
+                self.outcome_writer.save_page_screenshot("start_page_with_chatbot_window", driver)
 
             # Same-origin iframes
             result, candidates = _find_iframes(driver, result, quiet)
@@ -185,9 +196,7 @@ class ChatbotDetector:
                 except:
                     vprint("Failed to capture screenshot of the best iframe candidate element.", quiet)
                 driver.switch_to.frame(target_element)
-                try:
-                    if self.outcome_writer:
-                        self.outcome_writer.save_page_screenshot("start_page_with_chatbot_window", driver)
+                try:                    
                     html = driver.page_source
                     if self.outcome_writer:
                         self.outcome_writer.save_dom("iframe_dom", html)

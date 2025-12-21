@@ -1,5 +1,5 @@
 from .BaseChatbotWindowFinder import BaseChatbotWindowFinder
-from ..models.ChatbotWindowCandidate import ChatbotWindowCandidate
+from ..models.BaseCandidate import ChatbotWindowCandidate
 from .framework_patterns import _find_windows_candidates_by_framework
 
 
@@ -9,11 +9,14 @@ class SimpleDOMChatbotWindowFinder(BaseChatbotWindowFinder):
     def find(self, driver, quiet):
         print("searching simple dom chatbot windows...")
         elements = _find_windows_candidates_by_framework(driver, quiet)
-        return [
+        result = [
             ChatbotWindowCandidate(
+                index=-1,
                 source="dom",
                 context="main",
                 element=el,
-                metadata={"html": el.get_attribute("outerHTML")}
+                tag=el.tag_name,
+                html=el.get_attribute("outerHTML")
             ) for el in elements            
         ]
+        return result

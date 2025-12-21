@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from botscanner.models.ChatbotWindowCandidate import ChatbotWindowCandidate
+from botscanner.models.BaseCandidate import ChatbotWindowCandidate
 
 
 class BaseChatbotWindowFinder(ABC):
