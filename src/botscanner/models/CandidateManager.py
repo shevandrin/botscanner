@@ -46,7 +46,7 @@ class CandidateManager:
             file_name = f"screenshot_{candidate.dom_name}_{candidate.index}"
             self.writer.save_element_screenshot(file_name, candidate.element)
         except Exception as e:
-            vprint(f"Failed to save element screenshot: {e}")
+            vprint(f"Failed to save element screenshot: {e}", self.quiet)
 
     def select_candidate(self, min_score: int = 1):
         valid = [c for c in self._candidates if c.score >= min_score]
