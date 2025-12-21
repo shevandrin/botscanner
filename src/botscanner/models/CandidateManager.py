@@ -47,3 +47,9 @@ class CandidateManager:
             self.writer.save_element_screenshot(file_name, candidate.element)
         except Exception as e:
             vprint(f"Failed to save element screenshot: {e}")
+
+    def select_candidate(self, min_score: int = 1):
+        valid = [c for c in self._candidates if c.score >= min_score]
+        if not valid:
+            return None
+        return max(valid, key=lambda c: c.score)
