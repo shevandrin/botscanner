@@ -166,6 +166,9 @@ class ChatbotDetector:
             print("Candidates in CandidateManager:")
             print(cand_manager._candidates)
             cand_manager.process()
+            beste_cand = cand_manager.select_candidate()
+            print("Best candidate:")
+            print(beste_cand)
 
 
             vprint("Scanning main document for chatbot (shadow DOM)...", quiet)
@@ -177,38 +180,10 @@ class ChatbotDetector:
             if self.outcome_writer:
                 self.outcome_writer.save_page_screenshot("start_page_with_chatbot_window", driver)
 
-            # Same-origin iframes
-            result, candidates = _find_iframes(driver, result, quiet)
-
-            evaluated = [_evaluate_iframe_candidate(c) for c in candidates]
-
-            evaluated.sort(key=lambda c: c["score"], reverse=True)
-            target = evaluated[0]
-
-            try:
-                vprint(f"Best iframe candidate index: {target.get('index')} with score {target.get('score')}", quiet)
-                target_element = target.get("element")
-                try:
-                    # TODO: Experiment with delay, the chatbot window may take time to load
-                    time.sleep(2)
-                    if self.outcome_writer:
-                        self.outcome_writer.save_element_screenshot("chatbot_widget_window", target_element)
-                except:
-                    vprint("Failed to capture screenshot of the best iframe candidate element.", quiet)
-                driver.switch_to.frame(target_element)
-                try:                    
-                    html = driver.page_source
-                    if self.outcome_writer:
-                        self.outcome_writer.save_dom("iframe_dom", html)
-                    result["success"] = True
-                    result['html'] = html
-                except:
-                    result["error"] = "Failed to capture HTML from the best iframe candidate."
-                driver.switch_to.default_content()
-            except:
-                result["error"] = "Failed to switch to the best iframe candidate."
+            # TODO: go to the best candidate take its html and picture
+            # it make sence for shadow and iframe?
 
         except Exception as e:
-            result["error"] = str(e)
+            result["Error in capturing chatbot window"] = str(e)
 
         return result
