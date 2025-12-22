@@ -53,6 +53,9 @@ class ChatbotDetector:
             Dictionary containing the chatbot window details and HTML
         """
         self.logger.info("Capturing chatbot window is starting...")
+        if not candidate:
+            self.logger.warning("No chatbot launcher candidate provided. The botscanner is stopping.")
+            return None
         self.logger.info(f"Clicking on chatbot launcher element: {candidate.to_dict()}")                 
         try: 
             click_chatbot_launcher(candidate.element, driver, self.logger)
