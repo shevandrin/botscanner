@@ -2,7 +2,8 @@ from pathlib import Path
 from typing import Optional
 from botscanner.launcher import launch_page
 from botscanner.detector import ChatbotDetector
-from botscanner.outcomes.writer import OutcomeWriter
+from botscanner.outcomes.writer import OutcomeWriter#
+from botscanner.logger import setup_logger
 
 
 def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
@@ -19,9 +20,14 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
          // TODO: specify return
     """
 
+    outcome_manager = OutcomeWriter(url, output_dir)
+    log_file = outcome_manager.scan_dir / f"log_{outcome_manager.domain}.log"
+    logger = setup_logger(log_file)
+    logger.info("Botscanner is running...")  
+
     driver = launch_page(url)
 
-    outcome_manager = OutcomeWriter(url, output_dir)
+
 
     detector = ChatbotDetector(outcome_manager)
 
