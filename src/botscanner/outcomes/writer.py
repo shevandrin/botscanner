@@ -87,17 +87,29 @@ class OutcomeWriter:
         )
 
 
-    def save_element_screenshot(self, name: str, element):
+    def save_element_screenshot(self, name: str, element, logger, driver = None):
         """
         Save screenshot of a Selenium WebElement into screenshots/.
         """
 
         path = self.screenshots_dir / f"{name}.png"
-        element.screenshot(str(path))
 
-        self._artefacts["screenshots"][name] = str(
-            path.relative_to(self.scan_dir)
-        )
+        try:
+            size = element.size
+            if size["height"] == 0 or size["width"] == 0:
+                logger.warning("Element has zero size, skipping screenshot.")
+                return
+            if driver:
+                driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)    
+        
+            element.screenshot(str(path))
+
+            self._artefacts["screenshots"][name] = str(
+                path.relative_to(self.scan_dir)
+            )
+        except Exception as e:
+            logger.error(f"Error saving element screenshot: {e}")
+
 
     def save_page_screenshot(self, name: str, driver):
         """

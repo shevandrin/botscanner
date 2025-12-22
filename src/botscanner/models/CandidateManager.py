@@ -20,10 +20,8 @@ class CandidateManager:
             self._candidates.append(c)
 
     def process(self):
-        self.logger.info("Processing candidates...")
-        self.logger.info(f"Number of candidates: {len(self._candidates)}")
+        self.logger.info(f"Processing {len(self._candidates)} candidates...")
         for candidate in self._candidates:
-            self.logger.info("Processing a candidate:")
             self._process_candidate(candidate)
         candidates_data = [c.to_dict() for c in self._candidates]
         self.logger.info(f"Candidates data: {candidates_data}")
@@ -32,8 +30,7 @@ class CandidateManager:
         self.writer.save_json(file_name, candidates_data)
 
     def _process_candidate(self, candidate):
-        self.logger.info("Processing a candidate:")
-        #candidate.capture(self.driver)
+        self.logger.info("Processing next candidate:")
         candidate.evaluate()
 
         file_name = f"{candidate.dom_name}_{candidate.index}"
@@ -42,7 +39,7 @@ class CandidateManager:
 
         try:
             file_name = f"screenshot_{candidate.dom_name}_{candidate.index}"
-            self.writer.save_element_screenshot(file_name, candidate.element)
+            self.writer.save_element_screenshot(file_name, candidate.element, self.logger, self.driver)
         except Exception as e:
             self.logger.error(f"Failed to save element screenshot: {e}")
 
