@@ -13,6 +13,7 @@ detection:
       - "Alle akzeptieren"
       - "ALLE AKZEPTIEREN"
       - "Accept all cookies"
+      - "Continue"
     literal_xpaths:
       - "//button[@id='cookie_action_close_header']"
   start_phrases:
@@ -34,6 +35,9 @@ detection:
         - "kore-chat-window"
       area-label:
         - "chat-window-section"
+    amazon_connect:
+      id:
+        - "amazon-connect-chat-window"
   shadow_dom_indicators:
     - "chatbot"
     - "chat"
