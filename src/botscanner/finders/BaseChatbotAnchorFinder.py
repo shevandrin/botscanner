@@ -6,5 +6,5 @@ class BaseChatbotAnchorFinder(ABC):
     name: str
 
     @abstractmethod
-    def find(self, driver, quiet: bool) -> list[ChatbotAnchorCandidate]:
+    def find(self, driver, logger) -> list[ChatbotAnchorCandidate]:
         pass

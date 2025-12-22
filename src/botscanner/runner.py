@@ -29,10 +29,10 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
 
 
 
-    detector = ChatbotDetector(outcome_manager)
+    detector = ChatbotDetector(outcome_manager, logger)
 
-    candidate = detector.discover_chatbot(driver, quiet=quiet)
+    candidate = detector.discover_chatbot(driver)
 
-    detector.capture_chatbot_window(driver, candidate, quiet=quiet)
+    detector.capture_chatbot_window(driver, candidate)
 
     return driver

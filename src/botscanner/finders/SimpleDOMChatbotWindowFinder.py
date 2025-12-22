@@ -6,9 +6,9 @@ from .framework_patterns import _find_windows_candidates_by_framework
 class SimpleDOMChatbotWindowFinder(BaseChatbotWindowFinder):
     name = "simple_dom"
 
-    def find(self, driver, quiet):
-        print("searching simple dom chatbot windows...")
-        elements = _find_windows_candidates_by_framework(driver, quiet)
+    def find(self, driver, logger):
+        logger.info("searching simple dom chatbot windows...")
+        elements = _find_windows_candidates_by_framework(driver, logger)
         result = [
             ChatbotWindowCandidate(
                 index=-1,

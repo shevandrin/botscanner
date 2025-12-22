@@ -6,9 +6,9 @@ from .iframe import _find_iframe_chatbot_windows
 class IframeChatbotWindowFinder(BaseChatbotWindowFinder):
     name = "iframe_chatbot"
 
-    def find(self, driver, quiet):
-        print("searching iframe chatbot windows...")
-        elements = _find_iframe_chatbot_windows(driver, quiet)
+    def find(self, driver, logger):
+        logger.info("searching iframe chatbot windows...")
+        elements = _find_iframe_chatbot_windows(driver, logger)
         return [
             ChatbotWindowCandidate(
                 index=-1,

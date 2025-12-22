@@ -1,10 +1,9 @@
-from botscanner.utils import vprint
 from ..patterns import CORE_ANCHORS_PATTERNS
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
 
-def _find_anchor_candidates_by_hooks(driver: WebDriver, quiet: bool = True):
+def _find_anchor_candidates_by_hooks(driver: WebDriver, logger):
     """
     Finds all elements that contain common chatbot-related anchor texts.
 
@@ -53,9 +52,9 @@ def _find_anchor_candidates_by_hooks(driver: WebDriver, quiet: bool = True):
                 # Skip invalid XPath queries
                 pass
 
-        vprint(f"Found {len(elements)} element(s) matching chatbot anchors.", quiet)
+        logger.info(f"Found {len(elements)} element(s) matching chatbot anchors.")
         return elements
 
     except Exception as e:
-        vprint(f"Error executing anchor text search: {e}", quiet)
+        logger.error(f"Error executing anchor text search: {e}")
         return []

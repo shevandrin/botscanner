@@ -1,11 +1,13 @@
 from selenium.webdriver.common.by import By
 from ..patterns import CHATBOT_FRAMEWORKS_PATTERNS
-from ..utils import vprint
 
-def _find_windows_candidates_by_framework(driver, quiet=True):
+def _find_windows_candidates_by_framework(driver, logger):
     """
     Finds chatbot *window* elements in the main DOM based on known
     chatbot framework patterns (class, id, iframe, etc.).
+    Args:
+        driver: Selenium WebDriver instance
+        logger: Logger instance
 
     Returns:
         List[WebElement]
@@ -16,7 +18,7 @@ def _find_windows_candidates_by_framework(driver, quiet=True):
     frameworks = CHATBOT_FRAMEWORKS_PATTERNS
 
     for framework_name, selectors in frameworks.items():
-        vprint(f"Scanning for chatbot framework: {framework_name}", quiet)
+        logger.info(f"Scanning for chatbot framework: {framework_name}")
 
 
         for selector_type, values in selectors.items():
@@ -37,7 +39,7 @@ def _find_windows_candidates_by_framework(driver, quiet=True):
                     else:
                         # Unknown selector type → ignore safely
                         continue
-
+                    logger.debug(xpath)
                     elements = driver.find_elements(By.XPATH, xpath)
 
                     for el in elements:
@@ -47,10 +49,9 @@ def _find_windows_candidates_by_framework(driver, quiet=True):
                             candidates.append(el)
 
                 except Exception as e:
-                    vprint(
-                        f"Error while searching {framework_name} ({selector_type}={value}): {e}",
-                        quiet
+                    logger.error(
+                        f"Error while searching {framework_name} ({selector_type}={value}): {e}"
                     )
 
-    vprint(f"Framework-based window candidates found: {len(candidates)}", quiet)
+    logger.info(f"Framework-based window candidates found: {len(candidates)}")
     return candidates

@@ -6,9 +6,9 @@ from .find_anchor_candidates_by_computed_style import _find_anchor_candidates_by
 class ComputedStyleChatbotAnchorFinder(BaseChatbotAnchorFinder):
     name = "computed_style_anchor_seeker"
 
-    def find(self, driver, quiet):
-        print("searching dom chatbot anchors by computed style ...")
-        elements = _find_anchor_candidates_by_computed_style(driver, quiet)
+    def find(self, driver, logger):
+        logger.info("searching dom chatbot anchors by computed style ...")
+        elements = _find_anchor_candidates_by_computed_style(driver, logger)
         result = [
             ChatbotAnchorCandidate(
             index=-1,

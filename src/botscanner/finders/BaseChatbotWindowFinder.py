@@ -6,5 +6,5 @@ class BaseChatbotWindowFinder(ABC):
     name: str
 
     @abstractmethod
-    def find(self, driver, quiet: bool) -> list[ChatbotWindowCandidate]:
+    def find(self, driver, logger) -> list[ChatbotWindowCandidate]:
         pass

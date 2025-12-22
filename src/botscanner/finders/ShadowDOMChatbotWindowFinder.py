@@ -6,9 +6,9 @@ from .shadowDOM import _find_windows_candidates_as_shadowdom
 class ShadowDOMChatbotWindowFinder(BaseChatbotWindowFinder):
     name = "shadow_dom"
 
-    def find(self, driver, quiet: bool) -> list:
-        print("searching shadow dom chatbot windows...")
-        elements = _find_windows_candidates_as_shadowdom(driver, quiet)
+    def find(self, driver, logger) -> list:
+        logger.info("searching shadow dom chatbot windows...")
+        elements = _find_windows_candidates_as_shadowdom(driver, logger)
         if not elements:
             return []
 
