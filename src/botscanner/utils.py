@@ -5,7 +5,7 @@ from selenium.common.exceptions import (
 )
         
 
-def _is_element_clickable(element: WebElement, driver: WebDriver) ->  bool:
+def _is_element_clickable(element: WebElement, driver: WebDriver = None) ->  bool:
     """
     Checks if a WebElement is clickable WITHOUT clicking it.
     

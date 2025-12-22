@@ -7,6 +7,7 @@ from .models.CandidateManager import CandidateManagerAnchor, CandidateManager
 from .models.BaseCandidate import ChatbotAnchorCandidate
 from .finders.SimpleChatbotAnchorFinder import SimpleDOMChatbotAnchorFinder
 from .finders.ComputedStyleChatbotAnchorFinder import ComputedStyleChatbotAnchorFinder
+from ._detector_utils import click_chatbot_launcher
 
 
 class ChatbotDetector:
@@ -51,9 +52,10 @@ class ChatbotDetector:
         Returns:
             Dictionary containing the chatbot window details and HTML
         """
-        try:
-            self.logger.info("Clicking chatbot launcher...")
-            candidate.element.click()
+        self.logger.info("Capturing chatbot window is starting...")
+        self.logger.info(f"Clicking on chatbot launcher element: {candidate.to_dict()}")                 
+        try: 
+            click_chatbot_launcher(candidate.element, driver, self.logger)
 
             driver.implicitly_wait(30)
 

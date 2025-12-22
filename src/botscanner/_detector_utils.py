@@ -2,12 +2,26 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
-from .patterns import CORE_ANCHORS_PATTERNS
-from .jstools.wait_iframes import WAIT_FOR_ALL_IFRAMES_JS
-from .jstools.find_el_computed_style import FIND_ELEMENT_COMPUTED_STYLE_JS
-from .jstools.find_el_pointer_cursor import FIND_ELEMENT_POINTER_CURSOR_JS
-from selenium.common.exceptions import WebDriverException
 
+
+def click_chatbot_launcher(element, driver, logger):
+    """
+    Attempts to click a chatbot launcher element using native click first,
+    falling back to JavaScript click if necessary.
+    """
+    logger.info("Safe clicking chatbot launcher...")
+    try:
+        element.click()
+        logger.info("Chatbot launcher clicked via native click")
+        return True
+    except Exception as e:
+        logger.warning(
+            "Native click failed, falling back to JS click",
+            extra={"error": str(e)}
+        )
+        driver.execute_script("arguments[0].click();", element)
+        logger.info("Chatbot launcher clicked via JS")
+        return True
 
 def _get_html_from_element(element: WebElement, driver: WebDriver):
     """
