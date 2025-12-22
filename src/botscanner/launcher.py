@@ -34,7 +34,8 @@ def install_shadow_dom_override(driver):
 
 
 def launch_page(
-        url: str = "https://www.google.com/",
+        url: str,
+        logger,
         keep_open: bool = True,
         handle_cookies: bool = True,
         wait_seconds: int = 10,
@@ -43,9 +44,10 @@ def launch_page(
 
     Args:
         url (str): The URL to open.
+        logger: Logger instance for logging messages.
         keep_open (bool): If True, the browser window will remain open
             after the function finishes. Defaults to True.
-        hadle_cookies (bool): If True, handle cookie consent. Defaults to True.
+        handle_cookies (bool): If True, handle cookie consent. Defaults to True.
         wait_seconds (int): Number of seconds to wait after loading the page. Defaults to 10.
 
     Returns:
@@ -68,10 +70,11 @@ def launch_page(
             lambda d: d.execute_script("return document.readyState") == "complete"
         )
     except Exception as e:
-        print(f"Error launching browser: {e}")
+        if logger:
+            logger.error(f"Error launching browser: {e}")
         return None
 
-    if handle_cookies: _handle_cookie_consent(driver)
+    if handle_cookies: _handle_cookie_consent(driver, logger=logger)
     
     time.sleep(wait_seconds)
     return driver

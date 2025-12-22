@@ -25,7 +25,7 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
     logger = setup_logger(log_file)
     logger.info("Botscanner is running...")  
 
-    driver = launch_page(url)
+    driver = launch_page(url, logger=logger)
 
 
 

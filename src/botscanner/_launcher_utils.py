@@ -3,7 +3,6 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
 import time
 from .patterns import COOKIE_PATTERNS
-from .utils import vprint
 from .jstools.find_button_by_text import FIND_BUTTON_BY_TEXT_JS
 
 
@@ -34,7 +33,7 @@ def _query_shadow_buttons(driver, phrases):
 
     return driver.execute_script(FIND_BUTTON_BY_TEXT_JS, phrases)
 
-def _handle_cookie_consent(driver: WebDriver, quiet: bool = True):
+def _handle_cookie_consent(driver: WebDriver, logger):
     """
     Attempts to find and click a cookie consent button.
 
@@ -43,6 +42,7 @@ def _handle_cookie_consent(driver: WebDriver, quiet: bool = True):
 
     Args:
         driver: The active Selenium WebDriver instance.
+        logger: Logger for logging messages.
     """
 
     time.sleep(2)
@@ -51,7 +51,7 @@ def _handle_cookie_consent(driver: WebDriver, quiet: bool = True):
     literal_xpaths = COOKIE_PATTERNS.get('literal_xpaths', [])
     generated_xpaths = [f"//button[contains(., '{phrase}')]" for phrase in text_phrases]
     common_button_xpaths = generated_xpaths + literal_xpaths
-    vprint("Checking for cookie consent banner...", quiet)
+    logger.info("Attempting to handle cookie consent banner...")
 
     # main DOM traversal
     for xpath in common_button_xpaths:
@@ -61,9 +61,9 @@ def _handle_cookie_consent(driver: WebDriver, quiet: bool = True):
             try:
                 # If found, try to click it
                 if button.is_displayed() and button.is_enabled():
-                    vprint(f"  - Found consent button with XPath: {xpath}", quiet)
+                    logger.debug(f"  - Found consent button with XPath: {xpath}")
                     button.click()
-                    vprint("  - Clicked the consent button.", quiet)
+                    logger.debug("  - Clicked the consent button.")
                     time.sleep(1)
                     return
             except NoSuchElementException:
@@ -71,33 +71,32 @@ def _handle_cookie_consent(driver: WebDriver, quiet: bool = True):
                 continue
             except ElementClickInterceptedException:
                 # The button might be temporarily unclickable, try a JS click.
-                vprint("  - Regular click intercepted, trying JavaScript click.", quiet)
                 driver.execute_script("arguments[0].click();", button)
                 time.sleep(1)
                 return
             except Exception as e:
                 # Catch any other unexpected errors
-                vprint(f"  - An unexpected error occurred: {e}", quiet)
+                logger.error(f"  - Click failed for XPath {xpath}: {e}")
                 continue
     
     # shadow DOM traversal
     try:
-        vprint("  - No regular banner found. Searching shadow roots...", quiet)
+        logger.info("  - No regular banner found. Searching shadow roots...")
         shadow_buttons = _query_shadow_buttons(driver, text_phrases)
         for el in shadow_buttons:
             try:
                 driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", el)
                 driver.execute_script("arguments[0].click();", el)
-                vprint("  - Clicked consent button inside shadow root.", quiet)
+                logger.info("  - Clicked consent button inside shadow root.")
                 time.sleep(1)
                 return
             except Exception as e:
-                vprint(f"  - Shadow-root click failed: {e}", quiet)
+                logger.error(f"  - Shadow-root click failed: {e}")
                 continue
     except Exception as e:
-        vprint(f"  - Shadow-root traversal error: {e}", quiet)
+        logger.error(f"  - Shadow-root traversal error: {e}")
         
-    vprint("  - No cookie consent banner found, or it was already handled.", quiet)
+    logger.info("  - No cookie consent banner found, or it was already handled.")
 
 
 # TODO: Seems unused, consider removing?
