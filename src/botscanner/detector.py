@@ -93,6 +93,7 @@ class ChatbotDetector:
             # it make sence for shadow and iframe?
 
         except Exception as e:
-            vprint(f"Error during chatbot window capture: {e}", quiet)            
+            vprint(f"Error during chatbot window capture: {e}", quiet)
+            selected_candidate = None            
 
         return selected_candidate
