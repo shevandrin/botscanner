@@ -70,18 +70,10 @@ class CandidateManager:
             distribution[rounded_score] = distribution.get(rounded_score, 0) + 1
         return distribution
     
-    def build_stats_snapshot(self) -> StatsSnapshot:
-        anchor_stats = self._aggregate_by_strategy(self._candidates)
+    def build_stats_snapshot(self, domain: str) -> StatsSnapshot:
         return StatsSnapshot(
-            anchor_strategies=anchor_stats
-            #selected_anchor=(
-            #    AnchorProperties(**self.selected_anchor.to_dict())
-             #   if self.selected_anchor else None
-           # ),
-           # chatbot_window=(
-           #     ChatbotWindowProperties(**self.selected_window.to_dict())
-           #     if self.selected_window else None
-           # )
+            domain=domain,
+            strategies=self._aggregate_by_strategy(self._candidates)
         )
 
 class CandidateManagerAnchor(CandidateManager):

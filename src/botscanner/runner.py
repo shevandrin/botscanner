@@ -1,11 +1,13 @@
+from importlib.resources import path
+import json
 from pathlib import Path
 from typing import Optional
 from botscanner.launcher import launch_page
 from botscanner.detector import ChatbotDetector
-from botscanner.models.CandidateManager import CandidateManagerAnchor
+from botscanner.models.CandidateManager import CandidateManager, CandidateManagerAnchor
 from botscanner.outcomes.writer import OutcomeWriter
 from botscanner.logger import setup_logger
-from botscanner.models.DataCollector import RunMetadata
+from botscanner.models.DataCollector import FinalReport, RunMetadata
 
 
 def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
@@ -46,12 +48,24 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
 
     candidate = detector.discover_chatbot(driver, anch_cand_manager)
 
-    detector.capture_chatbot_window(driver, candidate)
+    win_cand_manager = CandidateManager(driver, outcome_manager, logger)
+    detector.capture_chatbot_window(driver, candidate, win_cand_manager)
 
-    stats_snapshot = anch_cand_manager.build_stats_snapshot
+    anchor_stats_snapshot = anch_cand_manager.build_stats_snapshot("anchor_candidates")
+    win_stats_snapshot = win_cand_manager.build_stats_snapshot("window_candidates")
 
-    final_report = {
-        "stats": stats_snapshot.to_dict()
-}
+    report = FinalReport(
+        anchor=anchor_stats_snapshot,
+        window=win_stats_snapshot
+    )
 
-    return final_report
+    report_file = (
+        outcome_manager.scan_dir
+        / f"log_{outcome_manager.domain}_report.json"
+    )
+    report_file.write_text(
+    json.dumps(report.to_dict(), indent=2),
+    encoding="utf-8"
+    )
+
+    return report

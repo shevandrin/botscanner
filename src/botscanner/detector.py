@@ -40,7 +40,7 @@ class ChatbotDetector:
         return selected_candidate
 
 
-    def capture_chatbot_window(self, driver: WebDriver, candidate: ChatbotAnchorCandidate) -> dict:
+    def capture_chatbot_window(self, driver: WebDriver, candidate: ChatbotAnchorCandidate, cand_manager: CandidateManager) -> dict:
         """
         Clicks the chatbot launcher element and captures the opened chatbot widget window.
         Handles iframes, shadow DOM, and regular DOM elements.
@@ -66,7 +66,6 @@ class ChatbotDetector:
                        ShadowDOMChatbotWindowFinder(),
                        IframeChatbotWindowFinder()]
             cands = []
-            cand_manager = CandidateManager(driver, self.outcome_writer, self.logger)
 
             for finder in finders:
                 found = finder.find(driver, self.logger)

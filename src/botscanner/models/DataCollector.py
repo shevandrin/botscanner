@@ -22,20 +22,20 @@ class StrategyStats:
 # This calss is for properties of selected anchor
 @dataclass
 class AnchorProperties:
-    strategy: str
-    score: float
-    tag: str
-    text: str
+    strategy: Optional[str]
+    score: Optional[float]
+    tag: Optional[str]
+    text: Optional[str]
     title: Optional[str]
     aria_label: Optional[str]
-    location: dict
+    location: Optional[dict]
 
 
 # This classs is for properties of selected chatbot window
 @dataclass
 class ChatbotWindowProperties:
-    window_type: str          # iframe | shadow | dom
-    detected_via: str         # strategy / mechanism
+    window_type: Optional[str]          
+    detected_via: Optional[str]
     title: Optional[str]
     iframe_src: Optional[str]
     bounding_box: Optional[dict]
@@ -43,10 +43,23 @@ class ChatbotWindowProperties:
 
 @dataclass
 class StatsSnapshot:
-    anchor_strategies: Dict[str, StrategyStats]
-    #window_strategies: Dict[str, StrategyStats]
-    #selected_anchor: Dict[str, Any] | None
-    #selected_window: Dict[str, Any] | None
+    domain: str
+    strategies: Dict[str, StrategyStats]
 
     def to_dict(self) -> dict:
-        return asdict(self)
+        return {
+            "domain": self.domain,
+            "strategies": {k: asdict(v) for k, v in self.strategies.items()}
+        }
+
+
+@dataclass
+class FinalReport:
+    anchor: StatsSnapshot
+    window: StatsSnapshot
+
+    def to_dict(self) -> dict:
+        return {
+            "anchor": self.anchor.to_dict()["strategies"],
+            "window": self.window.to_dict()["strategies"],
+        }
