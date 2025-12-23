@@ -29,6 +29,7 @@ detection:
   core_anchors:
     chatbot_anchors:
       - "chat"
+      - "copilot_widget"
   chatbot_frameworks:
     "kore.ai":
       class:
