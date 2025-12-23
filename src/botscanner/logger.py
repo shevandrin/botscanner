@@ -3,7 +3,7 @@ from pathlib import Path
 
 def setup_logger(
     log_file: str,
-    level=logging.INFO
+    level=logging.DEBUG,
 ):
     logger = logging.getLogger("botscanner")
     logger.setLevel(level)
