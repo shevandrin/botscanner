@@ -7,6 +7,7 @@ from .models.CandidateManager import CandidateManagerAnchor, CandidateManager
 from .models.BaseCandidate import ChatbotAnchorCandidate
 from .finders.SimpleChatbotAnchorFinder import SimpleDOMChatbotAnchorFinder
 from .finders.ComputedStyleChatbotAnchorFinder import ComputedStyleChatbotAnchorFinder
+from .finders.ShadowChatbotAnchor import ShadowChatbotAnchor
 from ._detector_utils import click_chatbot_launcher
 
 
@@ -26,7 +27,8 @@ class ChatbotDetector:
         self.logger.info("Discovering chatbot launcher elements (anchors)...")
 
         finders = [SimpleDOMChatbotAnchorFinder(),
-                   ComputedStyleChatbotAnchorFinder()]
+                   ComputedStyleChatbotAnchorFinder(),
+                   ShadowChatbotAnchor()]
 
         cand_manager = CandidateManagerAnchor(driver, self.outcome_writer, self.logger)
 
