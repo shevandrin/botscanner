@@ -2,8 +2,10 @@ from pathlib import Path
 from typing import Optional
 from botscanner.launcher import launch_page
 from botscanner.detector import ChatbotDetector
-from botscanner.outcomes.writer import OutcomeWriter#
+from botscanner.models.CandidateManager import CandidateManagerAnchor
+from botscanner.outcomes.writer import OutcomeWriter
 from botscanner.logger import setup_logger
+from botscanner.models.DataCollector import RunMetadata
 
 
 def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
@@ -21,18 +23,35 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
     """
 
     outcome_manager = OutcomeWriter(url, output_dir)
-    log_file = outcome_manager.scan_dir / f"log_{outcome_manager.domain}.log"
+    timestamp = outcome_manager.timestamp.strftime("%Y-%m-%dT%H-%M-%S")
+    log_file = (
+        outcome_manager.scan_dir
+        / f"log_{outcome_manager.domain}__{timestamp}.log"
+    )
     logger = setup_logger(log_file)
-    logger.info("Botscanner is running...")  
+    logger.info("Botscanner is running...")
 
     driver = launch_page(url, logger=logger)
 
-
+    run = RunMetadata(
+        url=url,
+        timestamp=timestamp,
+        browser="Chrome",
+        user_agent=None
+        #user_agent=driver.execute_script("return navigator.userAgent;")
+    )
 
     detector = ChatbotDetector(outcome_manager, logger)
+    anch_cand_manager = CandidateManagerAnchor(driver, outcome_manager, logger)
 
-    candidate = detector.discover_chatbot(driver)
+    candidate = detector.discover_chatbot(driver, anch_cand_manager)
 
     detector.capture_chatbot_window(driver, candidate)
 
-    return driver
+    stats_snapshot = anch_cand_manager.build_stats_snapshot
+
+    final_report = {
+        "stats": stats_snapshot.to_dict()
+}
+
+    return final_report

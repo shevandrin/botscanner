@@ -1,4 +1,5 @@
 from time import time
+from botscanner.models.DataCollector import AnchorProperties, ChatbotWindowProperties, StatsSnapshot, StrategyStats
 from botscanner.outcomes.writer import OutcomeWriter
 
 
@@ -41,6 +42,48 @@ class CandidateManager:
             return None
         return max(valid, key=lambda c: c.score)
     
+    def _aggregate_by_strategy(self, candidates):
+        stats = {}
+
+        for c in candidates:
+            stats.setdefault(c.strategy, []).append(c)
+
+        result = {}
+
+        for strategy, group in stats.items():
+            scores = [c.score for c in group if c.score is not None]
+
+            result[strategy] = StrategyStats(
+                strategy_name=strategy,
+                total_candidates=len(group),
+                clickable_candidates=sum(1 for c in group if c.clickable == True),
+                avg_score=sum(scores) / len(scores) if scores else None,
+                score_distribution=self._score_distribution(scores)
+            )
+
+        return result
+
+    def _score_distribution(self, scores) -> dict:
+        distribution = {}
+        for score in scores:
+            rounded_score = round(score)
+            distribution[rounded_score] = distribution.get(rounded_score, 0) + 1
+        return distribution
+    
+    def build_stats_snapshot(self) -> StatsSnapshot:
+        anchor_stats = self._aggregate_by_strategy(self._candidates)
+        return StatsSnapshot(
+            anchor_strategies=anchor_stats
+            #selected_anchor=(
+            #    AnchorProperties(**self.selected_anchor.to_dict())
+             #   if self.selected_anchor else None
+           # ),
+           # chatbot_window=(
+           #     ChatbotWindowProperties(**self.selected_window.to_dict())
+           #     if self.selected_window else None
+           # )
+        )
+
 class CandidateManagerAnchor(CandidateManager):
         
         def select_candidate(self, min_score: int = 1):

@@ -17,7 +17,7 @@ class ChatbotDetector:
         self.outcome_writer = outcome_writer
         self.logger = logger
 
-    def discover_chatbot(self, driver: WebDriver) -> None:
+    def discover_chatbot(self, driver: WebDriver, cand_manager: CandidateManagerAnchor) -> None:
         """
         Discover chatbot anchors that launch chatbot widgets.
 
@@ -29,8 +29,6 @@ class ChatbotDetector:
         finders = [SimpleDOMChatbotAnchorFinder(),
                    ComputedStyleChatbotAnchorFinder(),
                    ShadowChatbotAnchor()]
-
-        cand_manager = CandidateManagerAnchor(driver, self.outcome_writer, self.logger)
 
         for finder in finders:
             found = finder.find(driver, self.logger)
