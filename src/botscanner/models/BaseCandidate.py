@@ -16,6 +16,7 @@ class BaseCandidate:
     html: str
     clickable: Optional[bool] = None
     strategy: Optional[str] = None
+    dom_name: str = "base_candidate"
 
     score: int = 0
     evidence: List[str] = field(default_factory=list)
@@ -41,6 +42,28 @@ class BaseCandidate:
             "strategy": self.strategy,
             **self.metadata,
         }
+    
+    def save_screenshot_element(self, logger, driver, writer) -> None:
+        """
+        Save a screenshot of the candidate's web element.
+        """
+        if isinstance(self.element, WebElement):
+            try:
+                file_name = f"screenshot_{self.dom_name}_{self.index}"
+                writer.save_element_screenshot(file_name, self.element, logger, driver)
+            except Exception as e:
+                logger.error(f"Failed to save element screenshot: {e}")
+
+    def save_dom(self, logger, writer) -> None:
+        """
+        Save the DOM content of the candidate.
+        """
+        try:
+            file_name = f"dom_{self.dom_name}_{self.index}"
+            writer.save_dom(file_name, self.html)
+            self.logger.info(f"Dom content saved to {file_name}")
+        except Exception as e:
+            logger.error(f"Failed to save DOM content: {e}")
 
 @dataclass
 class ChatbotWindowCandidate(BaseCandidate):

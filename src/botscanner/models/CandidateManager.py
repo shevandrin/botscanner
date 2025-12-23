@@ -26,22 +26,14 @@ class CandidateManager:
         candidates_data = [c.to_dict() for c in self._candidates]
         self.logger.info(f"Candidates data: {candidates_data}")
         file_name = self._candidates[0].result_json_name
-        self.logger.info(file_name)
+        self.logger.info(f"Saving candidates data to {file_name}")
         self.writer.save_json(file_name, candidates_data)
 
     def _process_candidate(self, candidate):
         self.logger.info("Processing next candidate:")
         candidate.evaluate()
-
-        file_name = f"{candidate.dom_name}_{candidate.index}"
-        self.logger.info(file_name)
-        self.writer.save_dom(file_name, candidate.html)
-
-        try:
-            file_name = f"screenshot_{candidate.dom_name}_{candidate.index}"
-            self.writer.save_element_screenshot(file_name, candidate.element, self.logger, self.driver)
-        except Exception as e:
-            self.logger.error(f"Failed to save element screenshot: {e}")
+        candidate.save_dom(self.logger, self.writer)
+        candidate.save_screenshot_element(self.logger, self.driver, self.writer)
 
     def select_candidate(self, min_score: int = 1):
         valid = [c for c in self._candidates if c.score >= min_score]
