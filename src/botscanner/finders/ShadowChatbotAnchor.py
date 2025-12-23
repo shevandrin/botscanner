@@ -34,6 +34,8 @@ class ShadowChatbotAnchor(BaseChatbotAnchorFinder):
             ) for el in elements            
         ]
 
+        # print shadow elements found
         for el in elements:
-            print(el.get('tag'), el.get('keywordHits'), el.get('clickable'))
+            #print(el.get('tag'), el.get('keywordHits'), el.get('clickable'))
+            pass
         return result
