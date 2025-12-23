@@ -94,3 +94,39 @@ class ChatbotAnchorCandidate(BaseCandidate):
         self.score = result["score"]
         self.evidence = result["evidence"]
         return self
+    
+@dataclass
+class ChatbotAnchorCandidateJS(ChatbotAnchorCandidate):
+    result_json_name: str = "anchor_js_candidates"
+    dom_name: str = "anchor_js_candidate"
+
+    def save_screenshot_element(self, logger, driver, writer):
+        from PIL import Image
+        SCROLL_TO_BBOX_JS = """
+        window.scrollTo(
+        arguments[0] - window.innerWidth / 2,
+        arguments[1] - window.innerHeight / 2
+        );
+        """
+
+        bbox = self.metadata["bounding"]
+        driver.execute_script(
+            SCROLL_TO_BBOX_JS,
+            bbox["x"],
+            bbox["y"]
+        )
+
+        full_path = "full_page.png"
+        driver.save_screenshot(full_path)
+
+        x = int(bbox["x"])
+        y = int(bbox["y"])
+        w = int(bbox["width"])
+        h = int(bbox["height"])
+
+        img = Image.open(full_path)
+
+        element_img = img.crop((x, y, x + w, y + h))
+        element_img.save("chatbot_launcher.png")
+
+        return self
