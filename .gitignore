@@ -138,3 +138,4 @@ test.py
 # Bot Scanner results files
 results/
 *_outcomes/
+.DS_Store
