@@ -68,4 +68,4 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
     encoding="utf-8"
     )
 
-    return report
+    return driver
