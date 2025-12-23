@@ -35,7 +35,8 @@ dependencies = [
     "requests",
     "pyyaml",
     "python-dotenv",
-    "pandas"
+    "pandas",
+    "Pillow"
 ]
 
 [project.urls]
