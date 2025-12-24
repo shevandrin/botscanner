@@ -61,7 +61,7 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
 
     report_file = (
         outcome_manager.scan_dir
-        / f"log_{outcome_manager.domain}_report.json"
+        / f"report_{outcome_manager.domain}.json"
     )
     report_data = {
         "url": run.url,
