@@ -62,7 +62,7 @@ class BaseCandidate:
         try:
             file_name = f"dom_{self.dom_name}_{self.index}"
             writer.save_dom(file_name, self.html)
-            self.logger.info(f"Dom content for element {self.index} saved to {file_name}")
+            logger.info(f"Dom content for element {self.index} saved to {file_name}")
         except Exception as e:
             logger.error(f"Failed to save DOM content for element {self.index}: {e}")
 
