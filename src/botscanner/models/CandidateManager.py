@@ -25,7 +25,6 @@ class CandidateManager:
         for candidate in self._candidates:
             self._process_candidate(candidate)
         candidates_data = [c.to_dict() for c in self._candidates]
-        self.logger.info(f"Candidates data: {candidates_data}")
         file_name = self._candidates[0].result_json_name
         self.logger.info(f"Saving candidates data to {file_name}")
         self.writer.save_json(file_name, candidates_data)

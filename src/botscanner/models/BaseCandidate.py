@@ -51,8 +51,9 @@ class BaseCandidate:
             try:
                 file_name = f"screenshot_{self.dom_name}_{self.index}"
                 writer.save_element_screenshot(file_name, self.element, logger, driver)
+                logger.info(f"Screenshot for element {self.index} saved to {file_name}")
             except Exception as e:
-                logger.error(f"Failed to save element screenshot: {e}")
+                logger.error(f"Failed to save screenshot for element {self.index}: {e}")
 
     def save_dom(self, logger, writer) -> None:
         """
@@ -61,9 +62,9 @@ class BaseCandidate:
         try:
             file_name = f"dom_{self.dom_name}_{self.index}"
             writer.save_dom(file_name, self.html)
-            self.logger.info(f"Dom content saved to {file_name}")
+            self.logger.info(f"Dom content for element {self.index} saved to {file_name}")
         except Exception as e:
-            logger.error(f"Failed to save DOM content: {e}")
+            logger.error(f"Failed to save DOM content for element {self.index}: {e}")
 
 @dataclass
 class ChatbotWindowCandidate(BaseCandidate):
@@ -89,11 +90,18 @@ class ChatbotAnchorCandidate(BaseCandidate):
             except Exception:
                 self.clickable = False
 
-    def evaluate(self):
-        result = _evaluate_anchor_candidate(self.to_dict())
-        self.score = result["score"]
-        self.evidence = result["evidence"]
-        return self
+    def evaluate(self, logger=None):
+        try:
+            result = _evaluate_anchor_candidate(self.to_dict())
+            self.score = result["score"]
+            self.evidence = result["evidence"]
+            if logger:
+                logger.info(f"Evaluated anchor candidate {self.index} with score {self.score}")
+            return self
+        except Exception as e:
+            if logger:
+                logger.error(f"Error evaluating anchor candidate {self.index}: {e}")
+            raise e
     
 @dataclass
 class ChatbotAnchorCandidateJS(ChatbotAnchorCandidate):
