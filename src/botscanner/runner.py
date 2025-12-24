@@ -63,9 +63,13 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
         outcome_manager.scan_dir
         / f"log_{outcome_manager.domain}_report.json"
     )
+    report_data = {
+        "url": run.url,
+        "stats": report.to_dict()
+    }
     report_file.write_text(
-    json.dumps(report.to_dict(), indent=2),
-    encoding="utf-8"
+        json.dumps(report_data, indent=2),
+        encoding="utf-8"
     )
 
     return driver
