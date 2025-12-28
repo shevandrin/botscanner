@@ -8,6 +8,7 @@ from .models.BaseCandidate import ChatbotAnchorCandidate
 from .finders.anchor.SimpleChatbotAnchorFinder import SimpleDOMChatbotAnchorFinder
 from .finders.anchor.ComputedStyleChatbotAnchorFinder import ComputedStyleChatbotAnchorFinder
 from .finders.anchor.ShadowChatbotAnchor import ShadowChatbotAnchor
+from .finders.anchor.ViewedStyleAnchorFinder import ViewedStyleChatbotAnchorFinder
 from ._detector_utils import click_chatbot_launcher
 
 
@@ -28,7 +29,9 @@ class ChatbotDetector:
 
         finders = [SimpleDOMChatbotAnchorFinder(),
                    ComputedStyleChatbotAnchorFinder(),
-                   ShadowChatbotAnchor()]
+                   #ShadowChatbotAnchor(),
+                   ViewedStyleChatbotAnchorFinder(),
+                   ]
 
         for finder in finders:
             found = finder.find(driver, self.logger)
@@ -36,6 +39,7 @@ class ChatbotDetector:
 
         cand_manager.process()
         selected_candidate = cand_manager.select_candidate()
+        print(selected_candidate)
         
         return selected_candidate
 
@@ -64,7 +68,8 @@ class ChatbotDetector:
 
             finders = [SimpleDOMChatbotWindowFinder(),
                        ShadowDOMChatbotWindowFinder(),
-                       IframeChatbotWindowFinder()]
+                       IframeChatbotWindowFinder(),
+                       ]
 
             for finder in finders:
                 found = finder.find(driver, self.logger)
