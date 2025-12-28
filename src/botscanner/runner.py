@@ -48,7 +48,6 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
 
     candidate = detector.discover_chatbot(driver, anch_cand_manager)
     SelectedAnchor = AnchorProperties(driver, candidate, logger)
-    print(SelectedAnchor.to_dict())
 
     win_cand_manager = CandidateManager(driver, outcome_manager, logger)
     detector.capture_chatbot_window(driver, candidate, win_cand_manager)
