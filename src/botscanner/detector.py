@@ -1,13 +1,13 @@
 from selenium.webdriver.remote.webdriver import WebDriver
 import time
-from .finders.SimpleDOMChatbotWindowFinder import SimpleDOMChatbotWindowFinder
-from .finders.ShadowDOMChatbotWindowFinder import ShadowDOMChatbotWindowFinder
-from .finders.IframeChatbotWindowFinder import IframeChatbotWindowFinder
+from .finders.window.SimpleDOMChatbotWindowFinder import SimpleDOMChatbotWindowFinder
+from .finders.window.ShadowDOMChatbotWindowFinder import ShadowDOMChatbotWindowFinder
+from .finders.window.IframeChatbotWindowFinder import IframeChatbotWindowFinder
 from .models.CandidateManager import CandidateManagerAnchor, CandidateManager
 from .models.BaseCandidate import ChatbotAnchorCandidate
-from .finders.SimpleChatbotAnchorFinder import SimpleDOMChatbotAnchorFinder
-from .finders.ComputedStyleChatbotAnchorFinder import ComputedStyleChatbotAnchorFinder
-from .finders.ShadowChatbotAnchor import ShadowChatbotAnchor
+from .finders.anchor.SimpleChatbotAnchorFinder import SimpleDOMChatbotAnchorFinder
+from .finders.anchor.ComputedStyleChatbotAnchorFinder import ComputedStyleChatbotAnchorFinder
+from .finders.anchor.ShadowChatbotAnchor import ShadowChatbotAnchor
 from ._detector_utils import click_chatbot_launcher
 
 

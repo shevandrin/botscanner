@@ -1,5 +1,5 @@
 from .BaseChatbotAnchorFinder import BaseChatbotAnchorFinder
-from ..models.BaseCandidate import ChatbotAnchorCandidate
+from ...models.BaseCandidate import ChatbotAnchorCandidate
 from .find_anchor_candidates_by_hooks import _find_anchor_candidates_by_hooks
 
 

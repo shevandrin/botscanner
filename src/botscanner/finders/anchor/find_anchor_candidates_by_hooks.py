@@ -1,4 +1,4 @@
-from ..patterns import CORE_ANCHORS_PATTERNS
+from ...patterns import CORE_ANCHORS_PATTERNS
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 

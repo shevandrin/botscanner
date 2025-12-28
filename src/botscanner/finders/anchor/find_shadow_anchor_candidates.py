@@ -1,7 +1,7 @@
-from ..patterns import CORE_ANCHORS_PATTERNS
+from ...patterns import CORE_ANCHORS_PATTERNS
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
-from ..jstools.find_shadow_anchor import SHADOW_ANCHOR
+from ...jstools.find_shadow_anchor import SHADOW_ANCHOR
 
 def _find_shadow_anchor_candidates(driver: WebDriver, logger):
     """
