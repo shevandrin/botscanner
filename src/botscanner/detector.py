@@ -65,11 +65,9 @@ class ChatbotDetector:
             finders = [SimpleDOMChatbotWindowFinder(),
                        ShadowDOMChatbotWindowFinder(),
                        IframeChatbotWindowFinder()]
-            cands = []
 
             for finder in finders:
                 found = finder.find(driver, self.logger)
-                cands.extend(found)
                 cand_manager.add_candidates(found)
 
             cand_manager.process()
