@@ -1,3 +1,15 @@
+from bs4 import BeautifulSoup
+
+def has_visible_text(html: str) -> bool:
+    if not html:
+        return False
+
+    soup = BeautifulSoup(html, "html.parser")
+    text = soup.get_text(strip=True)
+
+    return len(text) > 0
+
+
 # TODO: Take heuristics values from patterns
 def _evaluate_anchor_candidate(candidate: dict) -> dict:
     html = candidate["html"].lower()
@@ -15,7 +27,11 @@ def _evaluate_anchor_candidate(candidate: dict) -> dict:
     if "widget" in html:
         score += 1
         evidence.append("keyword 'widget'")
-    
+
+    if has_visible_text(html):
+        score += 0.5
+        evidence.append("contains visible text")
+
     if not candidate['clickable']:
         score = 0
         evidence = ["not clickable"]
