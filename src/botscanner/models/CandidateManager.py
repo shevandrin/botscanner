@@ -19,9 +19,14 @@ class CandidateManager:
             c.index = self._index
             self._index += 1
             self._candidates.append(c)
+        self.logger.info(f"Total candidates after addition: {len(self._candidates)}")   
+        
 
     def process(self):
         self.logger.info(f"Processing {len(self._candidates)} candidates...")
+        if not self._candidates:
+            self.logger.info("No candidates to process.")
+            return
         for candidate in self._candidates:
             self._process_candidate(candidate)
         candidates_data = [c.to_dict() for c in self._candidates]
