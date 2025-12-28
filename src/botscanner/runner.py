@@ -7,7 +7,7 @@ from botscanner.detector import ChatbotDetector
 from botscanner.models.CandidateManager import CandidateManager, CandidateManagerAnchor
 from botscanner.outcomes.writer import OutcomeWriter
 from botscanner.logger import setup_logger
-from botscanner.models.DataCollector import FinalReport, RunMetadata
+from botscanner.models.DataCollector import FinalReport, RunMetadata, AnchorProperties
 
 
 def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
@@ -47,6 +47,8 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
     anch_cand_manager = CandidateManagerAnchor(driver, outcome_manager, logger)
 
     candidate = detector.discover_chatbot(driver, anch_cand_manager)
+    SelectedAnchor = AnchorProperties(driver, candidate, logger)
+    print(SelectedAnchor.to_dict())
 
     win_cand_manager = CandidateManager(driver, outcome_manager, logger)
     detector.capture_chatbot_window(driver, candidate, win_cand_manager)
@@ -56,7 +58,8 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
 
     report = FinalReport(
         anchor=anchor_stats_snapshot,
-        window=win_stats_snapshot
+        window=win_stats_snapshot,
+        selected_anchor=SelectedAnchor
     )
 
     report_file = (

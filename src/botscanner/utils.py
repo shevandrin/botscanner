@@ -1,3 +1,4 @@
+from typing import Optional
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
@@ -60,3 +61,21 @@ def _is_element_clickable(element: WebElement, driver: WebDriver = None) ->  boo
         
     except Exception as e:
         return False
+
+
+def get_element_attribute(element: WebElement, attribute_name: str) -> Optional[str]:
+    """
+    Retrieves the value of a specified attribute from a WebElement.
+    
+    Args:
+        element: The WebElement from which to retrieve the attribute.
+        attribute_name: The name of the attribute to retrieve.
+        
+    Returns:
+        The value of the attribute as a string, or None if the attribute is not present.
+    """
+    try:
+        attribute_value = element.get_attribute(attribute_name)
+        return attribute_value if attribute_value is not None else None
+    except Exception:
+        return None
