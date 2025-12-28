@@ -7,7 +7,6 @@ from ._detector_utils import _get_html_from_element
 from ._launcher_utils import _handle_cookie_consent, _click_element_from_data, _check_robots_txt
 from .utils import _is_element_clickable
 from .evaluators.get_location_chatbot_anchor import get_location_chatbot_anchor
-from .finders.framework_patterns import _find_windows_candidates_by_framework
 from .logger import setup_logger
 from .jstools.find_shadow_anchor import SHADOW_ANCHOR
 from .jstools.shadow_dom import SHADOW_DOM_OVERRIDE_JS
