@@ -92,4 +92,12 @@ class CandidateManagerAnchor(CandidateManager):
             if valid_s2:
                 valid_s2.sort(key=lambda x: x.score, reverse=True)
                 return valid_s2[0]
+
+            valid_s3 = [c for c in self._candidates if c.score >= 0 and c.strategy == "ViewedStyleChatbotAnchorFinder"]
+            self.logger.info(f"ViewedStyleChatbotAnchorFinder valid candidates count: {len(valid_s3)}")
+            if valid_s3:
+                valid_s3.sort(key=lambda x: x.score, reverse=True)
+                return valid_s3[0]
+            
             return None
+    

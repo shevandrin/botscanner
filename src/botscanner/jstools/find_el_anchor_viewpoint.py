@@ -1,72 +1,76 @@
-FIND_VIEWPORT_ANCHORED_INTERACTIVE_ELEMENTS_JS = r"""
+xxxFIND_VIEWPORT_ANCHORED_INTERACTIVE_ELEMENTS_JS = r"""
 (function () {
+    return document.querySelector("div");
+})();
+"""
+
+
+FIND_VIEWPORT_ANCHORED_INTERACTIVE_ELEMENTS_JS = r"""
+return (function () {
 
     const candidates = [];
-    const elements = document.querySelectorAll('div, button, a, span');
+    const visited = new Set();
 
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    for (const el of elements) {
-        try {
-            const rect = el.getBoundingClientRect();
-            const style = window.getComputedStyle(el);
+    const EDGE_X = Math.min(320, vw * 0.35);
+    const EDGE_Y = Math.min(240, vh * 0.30);
 
-            // ---- Visibility check ----
-            const isVisible =
-                rect.width > 20 &&
-                rect.height > 20 &&
-                style.display !== 'none' &&
-                style.visibility !== 'hidden' &&
-                style.opacity !== '0';
+    function isVisible(el) {
+        const r = el.getBoundingClientRect();
+        const s = window.getComputedStyle(el);
+        return (
+            r.width > 20 &&
+            r.height > 20 &&
+            s.display !== 'none' &&
+            s.visibility !== 'hidden' &&
+            s.opacity !== '0' &&
+            s.pointerEvents !== 'none'
+        );
+    }
 
-            if (!isVisible) continue;
+    function normalizeTarget(el, maxDepth = 4) {
+        let cur = el;
+        let depth = 0;
 
-            // ---- Viewport bottom-right zone ----
-            // bottom-right 30% × 30% of viewport
-            const inBottomRight =
-                rect.left >= vw * 0.65 &&
-                rect.top >= vh * 0.65 &&
-                rect.right <= vw &&
-                rect.bottom <= vh;
+        while (cur && depth <= maxDepth && cur !== document.body) {
+            if (isVisible(cur)) return cur;
+            cur = cur.parentElement;
+            depth++;
+        }
+        return null;
+    }
 
-            if (!inBottomRight) continue;
+    for (let dx = 0; dx <= 40; dx += 10) {
+        for (let dy = 0; dy <= 40; dy += 10) {
 
-            // ---- Interaction affordance ----
-            const hasPointerCursor = style.cursor === 'pointer';
-            const hasRoleButton = el.getAttribute('role') === 'button';
-            const hasOnClick =
-                typeof el.onclick === 'function' ||
-                el.hasAttribute('onclick');
+            const x = vw - 10 - dx;
+            const y = vh - 10 - dy;
 
-            if (!(hasPointerCursor || hasRoleButton || hasOnClick)) continue;
+            const hit = document.elementFromPoint(x, y);
+            if (!hit || visited.has(hit)) continue;
+            visited.add(hit);
 
-            // ---- Exclude obvious layout noise ----
-            const isTooLarge =
-                rect.width > vw * 0.6 ||
-                rect.height > vh * 0.6;
+            try {
+                const interactive = normalizeTarget(hit);
+                if (!interactive) continue;
 
-            if (isTooLarge) continue;
+                const r = interactive.getBoundingClientRect();
 
-            // ---- Collect candidate ----
-            candidates.push({
-                element: el,
-                rect: {
-                    x: rect.x,
-                    y: rect.y,
-                    width: rect.width,
-                    height: rect.height
-                },
-                affordance: {
-                    cursor: style.cursor,
-                    role: el.getAttribute('role'),
-                    onclick: !!el.onclick
-                }
-            });
+                const nearBottomRight =
+                    (vw - r.right) <= EDGE_X &&
+                    (vh - r.bottom) <= EDGE_Y;
 
-        } catch (e) {
-            // Ignore detached / stale nodes
-            continue;
+                if (!nearBottomRight) continue;
+
+                if (r.width > vw * 0.7 || r.height > vh * 0.7) continue;
+
+                candidates.push(interactive);
+
+            } catch (e) {
+                continue;
+            }
         }
     }
 
