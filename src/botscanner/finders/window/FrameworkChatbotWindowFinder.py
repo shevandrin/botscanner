@@ -1,6 +1,6 @@
 from .BaseChatbotWindowFinder import BaseChatbotWindowFinder
 from ...models.BaseCandidate import ChatbotWindowCandidate
-from .find_window_by_framework_patterns import _find_windows_candidates_by_framework
+from .find_window_by_framework_patterns import _find_window_candidates_by_framework
 
 
 class FrameworkChatbotWindowFinder(BaseChatbotWindowFinder):
@@ -8,7 +8,7 @@ class FrameworkChatbotWindowFinder(BaseChatbotWindowFinder):
 
     def find(self, driver, logger):
         logger.info("searching framework chatbot windows...")
-        elements = _find_windows_candidates_by_framework(driver, logger)
+        elements = _find_window_candidates_by_framework(driver, logger)
         result = [
             ChatbotWindowCandidate(
                 index=-1,

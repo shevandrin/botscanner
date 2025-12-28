@@ -68,7 +68,7 @@ class ChatbotDetector:
             driver.implicitly_wait(30)
 
             finders = [SimpleDOMChatbotWindowFinder(),
-                       #FrameworkChatbotWindowFinder(),
+                       FrameworkChatbotWindowFinder(),
                        #ShadowDOMChatbotWindowFinder(),
                        IframeChatbotWindowFinder(),
                        ]

@@ -1,57 +1,96 @@
-from selenium.webdriver.common.by import By
 from ...patterns import CHATBOT_FRAMEWORKS_PATTERNS
 
-def _find_windows_candidates_by_framework(driver, logger):
+def _find_window_candidates_by_framework(driver, logger):
     """
-    Finds chatbot *window* elements in the main DOM based on known
-    chatbot framework patterns (class, id, iframe, etc.).
-    Args:
-        driver: Selenium WebDriver instance
-        logger: Logger instance
+    Fast DOM-side finder for chatbot window candidates
+    based on known chatbot framework patterns.
 
-    Returns:
-        List[WebElement]
+    Finder only. No evaluation.
     """
-    candidates = []
-    seen = set()
 
     frameworks = CHATBOT_FRAMEWORKS_PATTERNS
+    print(frameworks)
 
-    for framework_name, selectors in frameworks.items():
-        logger.info(f"Scanning for chatbot framework: {framework_name}")
+    js = """
+    const frameworks = arguments[0];
+    const results = [];
+    const seen = new Set();
 
+    // Pre-collect elements
+    const allDivs = document.querySelectorAll("div");
+    const allIframes = document.querySelectorAll("iframe");
 
-        for selector_type, values in selectors.items():
-            for value in values:
-                try:
-                    if selector_type == "class":
-                        xpath = f"//*[contains(@class, '{value}')]"
+    function add(el) {
+        if (!seen.has(el)) {
+            seen.add(el);
+            results.push(el);
+        }
+    }
 
-                    elif selector_type == "id":
-                        xpath = f"//*[@id='{value}']"
+    // ---- DIV-BASED WINDOWS ----
+    for (const el of allDivs) {
+        const cls = (el.className || "").toLowerCase();
+        const id = (el.id || "").toLowerCase();
+        const aria = (el.getAttribute("aria-label") || "").toLowerCase();
 
-                    elif selector_type == "iframe":
-                        xpath = f"//iframe[contains(@class, '{value}') or contains(@id, '{value}')]"
+        for (const fw of Object.values(frameworks)) {
+            if (fw.class) {
+                for (const token of fw.class) {
+                    if (cls.includes(token.toLowerCase())) {
+                        add(el);
+                        continue;
+                    }
+                }
+            }
 
-                    elif selector_type == "area-label":
-                        xpath = f"//*[@aria-label='{value}']"
+            if (fw.id) {
+                for (const token of fw.id) {
+                    if (id === token.toLowerCase()) {
+                        add(el);
+                        continue;
+                    }
+                }
+            }
 
-                    else:
-                        # Unknown selector type → ignore safely
-                        continue
-                    logger.debug(xpath)
-                    elements = driver.find_elements(By.XPATH, xpath)
+            if (fw["aria-label"]) {
+                for (const token of fw["aria-label"]) {
+                    if (aria === token.toLowerCase()) {
+                        add(el);
+                        continue;
+                    }
+                }
+            }
+        }
+    }
 
-                    for el in elements:
-                        el_id = id(el)
-                        if el_id not in seen:
-                            seen.add(el_id)
-                            candidates.append(el)
+    // ---- IFRAME-BASED WINDOWS ----
+    for (const iframe of allIframes) {
+        const cls = (iframe.className || "").toLowerCase();
+        const id = (iframe.id || "").toLowerCase();
 
-                except Exception as e:
-                    logger.error(
-                        f"Error while searching {framework_name} ({selector_type}={value}): {e}"
-                    )
+        for (const fw of Object.values(frameworks)) {
+            if (fw.iframe) {
+                for (const token of fw.iframe) {
+                    const t = token.toLowerCase();
+                    if (cls.includes(t) || id.includes(t)) {
+                        add(iframe);
+                        continue;
+                    }
+                }
+            }
+        }
+    }
 
-    logger.info(f"Framework-based window candidates found: {len(candidates)}")
-    return candidates
+    return results;
+    """
+
+    try:
+        elements = driver.execute_script(js, frameworks)
+        logger.info(
+            f"Framework-based window candidates found: {len(elements)}"
+        )
+        return elements
+    except Exception as e:
+        logger.error(f"JS framework finder failed: {e}")
+        return []
+
