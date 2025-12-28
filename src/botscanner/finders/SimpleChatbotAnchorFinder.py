@@ -16,7 +16,8 @@ class SimpleDOMChatbotAnchorFinder(BaseChatbotAnchorFinder):
                 context="main",
                 element=el,
                 tag=el.tag_name,
-                html=el.get_attribute("outerHTML"),
+                html="",
+                #html=el.get_attribute("outerHTML"),
                 strategy=self.__class__.__name__,
             ) for el in elements            
         ]
