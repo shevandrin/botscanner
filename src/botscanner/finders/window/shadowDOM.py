@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
-from ..jstools.shadow_search_js import SHADOW_SEARCH_JS
-from ..patterns import CHATBOT_WINDOWS_SHADOW_DOM_PATTERNS
+from ...jstools.shadow_search_js import SHADOW_SEARCH_JS
+from ...patterns import CHATBOT_WINDOWS_SHADOW_DOM_PATTERNS
 
 def _find_windows_candidates_as_shadowdom(driver, logger):
     """

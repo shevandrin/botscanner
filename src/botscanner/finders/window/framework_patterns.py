@@ -1,5 +1,5 @@
 from selenium.webdriver.common.by import By
-from ..patterns import CHATBOT_FRAMEWORKS_PATTERNS
+from ...patterns import CHATBOT_FRAMEWORKS_PATTERNS
 
 def _find_windows_candidates_by_framework(driver, logger):
     """

@@ -1,5 +1,5 @@
 from .BaseChatbotWindowFinder import BaseChatbotWindowFinder
-from ..models.BaseCandidate import ChatbotWindowCandidate
+from ...models.BaseCandidate import ChatbotWindowCandidate
 from .shadowDOM import _find_windows_candidates_as_shadowdom
 
 

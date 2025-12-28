@@ -1,5 +1,5 @@
 from .BaseChatbotWindowFinder import BaseChatbotWindowFinder
-from ..models.BaseCandidate import ChatbotWindowCandidate
+from ...models.BaseCandidate import ChatbotWindowCandidate
 from .framework_patterns import _find_windows_candidates_by_framework
 
 

@@ -1,5 +1,5 @@
 from .BaseChatbotWindowFinder import BaseChatbotWindowFinder
-from ..models.BaseCandidate import ChatbotWindowCandidate
+from ...models.BaseCandidate import ChatbotWindowCandidate
 from .iframe import _find_iframe_chatbot_windows
 
 

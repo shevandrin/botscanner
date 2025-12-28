@@ -1,5 +1,5 @@
 from selenium.webdriver.common.by import By
-from ..jstools.wait_iframes import WAIT_FOR_ALL_IFRAMES_JS
+from ...jstools.wait_iframes import WAIT_FOR_ALL_IFRAMES_JS
 
 
 def _find_iframe_chatbot_windows(driver, logger):
