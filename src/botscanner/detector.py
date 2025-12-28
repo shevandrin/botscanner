@@ -9,6 +9,7 @@ from .finders.anchor.SimpleChatbotAnchorFinder import SimpleDOMChatbotAnchorFind
 from .finders.anchor.ComputedStyleChatbotAnchorFinder import ComputedStyleChatbotAnchorFinder
 from .finders.anchor.ShadowChatbotAnchor import ShadowChatbotAnchor
 from .finders.anchor.ViewedStyleAnchorFinder import ViewedStyleChatbotAnchorFinder
+from .finders.window.FrameworkChatbotWindowFinder import FrameworkChatbotWindowFinder
 from ._detector_utils import click_chatbot_launcher
 
 
@@ -67,7 +68,8 @@ class ChatbotDetector:
             driver.implicitly_wait(30)
 
             finders = [SimpleDOMChatbotWindowFinder(),
-                       ShadowDOMChatbotWindowFinder(),
+                       #FrameworkChatbotWindowFinder(),
+                       #ShadowDOMChatbotWindowFinder(),
                        IframeChatbotWindowFinder(),
                        ]
 

@@ -1,14 +1,14 @@
 from .BaseChatbotWindowFinder import BaseChatbotWindowFinder
 from ...models.BaseCandidate import ChatbotWindowCandidate
-from .find_window_by_hooks import _find_windows_candidates_by_hooks
+from .framework_patterns import _find_windows_candidates_by_framework
 
 
-class SimpleDOMChatbotWindowFinder(BaseChatbotWindowFinder):
-    name = "simple_dom"
+class FrameworkChatbotWindowFinder(BaseChatbotWindowFinder):
+    name = "framework"
 
     def find(self, driver, logger):
-        logger.info("searching simple dom chatbot windows...")
-        elements = _find_windows_candidates_by_hooks(driver, logger)
+        logger.info("searching framework chatbot windows...")
+        elements = _find_windows_candidates_by_framework(driver, logger)
         result = [
             ChatbotWindowCandidate(
                 index=-1,

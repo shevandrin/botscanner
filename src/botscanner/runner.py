@@ -47,7 +47,11 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
     anch_cand_manager = CandidateManagerAnchor(driver, outcome_manager, logger)
 
     candidate = detector.discover_chatbot(driver, anch_cand_manager)
-    SelectedAnchor = AnchorProperties(driver, candidate, logger)
+    if candidate:
+        SelectedAnchor = AnchorProperties(driver, candidate, logger)
+    else:
+        logger.info("No chatbot launcher candidate was selected.")
+        SelectedAnchor = None
 
     win_cand_manager = CandidateManager(driver, outcome_manager, logger)
     detector.capture_chatbot_window(driver, candidate, win_cand_manager)
