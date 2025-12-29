@@ -82,21 +82,21 @@ def get_element_attribute(element: WebElement, attribute_name: str) -> Optional[
     
 def wait_for_dom_change(driver, timeout=15):
     js = """
-    return new Promise(resolve => {
-        const observer = new MutationObserver(() => {
-            observer.disconnect();
-            resolve(true);
-        });
+    const done = arguments[arguments.length - 1];
 
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-
-        setTimeout(() => {
-            observer.disconnect();
-            resolve(false);
-        }, arguments[0]);
+    const observer = new MutationObserver(() => {
+        observer.disconnect();
+        done(true);
     });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    setTimeout(() => {
+        observer.disconnect();
+        done(false);
+    }, arguments[0]);
     """
     driver.execute_async_script(js, timeout * 1000)
