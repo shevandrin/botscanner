@@ -19,6 +19,8 @@ class ChatbotDetector:
     def __init__(self, outcome_writer, logger):
         self.outcome_writer = outcome_writer
         self.logger = logger
+        self.selected_anchor = None
+        self.selected_window = None
 
     def discover_chatbot(self, driver: WebDriver, cand_manager: CandidateManagerAnchor) -> None:
         """
