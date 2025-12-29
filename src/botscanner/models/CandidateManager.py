@@ -37,6 +37,7 @@ class CandidateManager:
     def _process_candidate(self, candidate):
         self.logger.info("Processing next candidate:")
         candidate.evaluate()
+        candidate.make_dom_snapshot(self.driver)
         candidate.save_dom(self.logger, self.driver, self.writer)
         candidate.save_screenshot_element(self.logger, self.driver, self.writer)
     def select_candidate(self, min_score: int = 1):

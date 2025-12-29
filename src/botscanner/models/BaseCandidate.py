@@ -17,10 +17,30 @@ class BaseCandidate:
     clickable: Optional[bool] = None
     strategy: Optional[str] = None
     dom_name: str = "base_candidate"
+    dom_snapshot: Optional[str] = None
 
     score: int = 0
     evidence: List[str] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)
+
+    
+    def make_dom_snapshot(self, driver) -> None:
+        """
+        Capture the DOM snapshot of the candidate's element.
+        """
+        try:
+            if isinstance(self.element, WebElement):
+                if self.tag == "iframe":
+                    driver.switch_to.frame(self.element)
+                    self.dom_snapshot = driver.page_source
+                    driver.switch_to.parent_frame()
+                    return
+                self.dom_snapshot = self.element.get_attribute("outerHTML")
+            else:
+                self.dom_snapshot = str(self.element)
+        except Exception as e:
+            self.dom_snapshot = None
+        
 
     def evaluate(self) -> None:
         """
