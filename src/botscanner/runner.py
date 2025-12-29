@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from typing import Optional
 from botscanner.launcher import launch_page
-from botscanner.detector import ChatbotDetector
+from botscanner.ChatbotDetector import ChatbotDetector
 from botscanner.models.CandidateManager import CandidateManager, CandidateManagerAnchor
 from botscanner.outcomes.writer import OutcomeWriter
 from botscanner.logger import setup_logger
