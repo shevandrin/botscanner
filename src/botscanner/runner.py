@@ -54,7 +54,7 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
         SelectedAnchor = None
 
     win_cand_manager = CandidateManager(driver, outcome_manager, logger)
-    selected_window = detector.capture_chatbot_window(driver, selected_anchor, win_cand_manager)
+    selected_window = detector.capture_chatbot_window(driver, win_cand_manager)
     if selected_window:
         SelectedWindow = ChatbotWindowProperties(driver, selected_window, logger)
     else:

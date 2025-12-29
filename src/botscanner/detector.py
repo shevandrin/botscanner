@@ -42,12 +42,12 @@ class ChatbotDetector:
             cand_manager.add_candidates(found)
 
         cand_manager.process()
-        selected_candidate = cand_manager.select_candidate()
+        self.selected_anchor = cand_manager.select_candidate()
         
-        return selected_candidate
+        return self.selected_anchor
 
 
-    def capture_chatbot_window(self, driver: WebDriver, candidate: ChatbotAnchorCandidate, cand_manager: CandidateManager) -> dict:
+    def capture_chatbot_window(self, driver: WebDriver, cand_manager: CandidateManager) -> dict:
         """
         Clicks the chatbot launcher element and captures the opened chatbot widget window.
         Handles iframes, shadow DOM, and regular DOM elements.
@@ -60,12 +60,12 @@ class ChatbotDetector:
             Dictionary containing the chatbot window details and HTML
         """
         self.logger.info("Capturing chatbot window is starting...")
-        if not candidate:
+        if not self.selected_anchor:
             self.logger.warning("No chatbot launcher candidate provided. The botscanner is stopping.")
             return None
-        self.logger.info(f"Clicking on chatbot launcher element: {candidate.to_dict()}")                 
+        self.logger.info(f"Clicking on chatbot launcher element: {self.selected_anchor.to_dict()}")                 
         try: 
-            click_chatbot_launcher(candidate.element, driver, self.logger)
+            click_chatbot_launcher(self.selected_anchor.element, driver, self.logger)
 
             #driver.implicitly_wait(30)
             wait_for_dom_change(driver)
@@ -81,7 +81,7 @@ class ChatbotDetector:
                 cand_manager.add_candidates(found)
 
             cand_manager.process()
-            selected_candidate = cand_manager.select_candidate()
+            self.selected_window = cand_manager.select_candidate()
 
             page_html = driver.page_source
             if self.outcome_writer:
@@ -96,6 +96,6 @@ class ChatbotDetector:
 
         except Exception as e:
             self.logger.error(f"Error during chatbot window capture: {e}")
-            selected_candidate = None            
+            self.selected_window = None          
 
-        return selected_candidate
+        return self.selected_window
