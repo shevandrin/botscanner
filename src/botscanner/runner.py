@@ -1,14 +1,13 @@
-from importlib.resources import path
 import json
 from pathlib import Path
 from typing import Optional
-from botscanner import FeatureExtractor
-from botscanner.launcher import launch_page
-from botscanner.ChatbotDetector import ChatbotDetector
-from botscanner.models.CandidateManager import CandidateManager, CandidateManagerAnchor
-from botscanner.outcomes.writer import OutcomeWriter
-from botscanner.logger import setup_logger
-from botscanner.models.DataCollector import FinalReport, RunMetadata, AnchorProperties, ChatbotWindowProperties
+from .FeatureExtractor import FeatureExtractor
+from .launcher import launch_page
+from .ChatbotDetector import ChatbotDetector
+from .models.CandidateManager import CandidateManager, CandidateManagerAnchor
+from .outcomes.writer import OutcomeWriter
+from .logger import setup_logger
+from .models.DataCollector import FinalReport, RunMetadata, AnchorProperties, ChatbotWindowProperties
 
 
 def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):

@@ -10,7 +10,7 @@ class FeatureExtractor:
 
 
     def extract_anchor_position(self) -> PositionFeature:
-        loc = get_location_chatbot_anchor(self.anchor.element)
+        loc = get_location_chatbot_anchor(self.driver,self.anchor.element)
         if loc is not None:
             self.logger.info(f"Anchor position determined: {loc}")
             return PositionFeature(
@@ -30,7 +30,15 @@ class FeatureExtractor:
     def extract_title(self) -> ResolvedFeature:
         candidates = []
         # TODO: implement title extraction logic
-        return None, None
+        return ResolvedFeature(
+            selected=None,
+            candidates=[])
+    
+    def extract_avatar(self) -> ResolvedFeature:
+        candidates = []
+        return ResolvedFeature(
+            selected=None,
+            candidates=[])
 
     def extract(self) -> ChatbotFeatures:
         return ChatbotFeatures(
@@ -39,4 +47,5 @@ class FeatureExtractor:
             window_type=self.extract_window_type(),
             first_visible_text=None,  # later
             title=self.extract_title(),
+            avatar=self.extract_avatar() # later
         )

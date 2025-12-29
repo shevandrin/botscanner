@@ -11,5 +11,6 @@ from .logger import setup_logger
 from .jstools.find_shadow_anchor import SHADOW_ANCHOR
 from .jstools.shadow_dom import SHADOW_DOM_OVERRIDE_JS
 from .jstools.shadow_search_js import SHADOW_SEARCH_JS
+from .FeatureExtractor import FeatureExtractor
 
 print(f"botscanner package initialized (version {__version__})")
