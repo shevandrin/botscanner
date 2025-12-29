@@ -2,6 +2,7 @@ from importlib.resources import path
 import json
 from pathlib import Path
 from typing import Optional
+from botscanner import FeatureExtractor
 from botscanner.launcher import launch_page
 from botscanner.ChatbotDetector import ChatbotDetector
 from botscanner.models.CandidateManager import CandidateManager, CandidateManagerAnchor
@@ -64,11 +65,14 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
     anchor_stats_snapshot = anch_cand_manager.build_stats_snapshot("anchor_candidates")
     win_stats_snapshot = win_cand_manager.build_stats_snapshot("window_candidates")
 
+    feature_extractor = FeatureExtractor(driver, detector, logger).extract()
+
     report = FinalReport(
         anchor=anchor_stats_snapshot,
         window=win_stats_snapshot,
         selected_anchor=SelectedAnchor,
-        selected_window=SelectedWindow
+        selected_window=SelectedWindow,
+        features=feature_extractor
     )
 
     report_file = (
