@@ -9,6 +9,14 @@ class FeatureCandidate:
     score: float
     metadata: dict = field(default_factory=dict)
 
+    def to_dict(self):
+        return {
+            "source": self.source,
+            "value": self.value,
+            "score": self.score,
+            "metadata": self.metadata
+        }
+
 
 @dataclass
 class ResolvedFeature:
@@ -17,8 +25,8 @@ class ResolvedFeature:
 
     def to_dict(self):
         return {
-            "selected": self.selected,
-            "candidates": [c.__dict__ for c in self.candidates]
+            "selected": self.selected.value if self.selected else None,
+            "candidates": [c.to_dict() for c in self.candidates]
         }
 
 

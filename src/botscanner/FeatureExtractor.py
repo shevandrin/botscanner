@@ -1,5 +1,7 @@
 from botscanner.models.ChatbotFeatures import ChatbotFeatures, PositionFeature, ResolvedFeature, FeatureCandidate
 from botscanner.evaluators.get_location_chatbot_anchor import get_location_chatbot_anchor
+from botscanner.finders.features.find_title_candidates import find_title_candidates
+from botscanner.evaluators.eval_title_window import _evaluate_title_window
 
 class FeatureExtractor:
     def __init__(self, driver, ChatbotDetector, logger):
@@ -28,11 +30,19 @@ class FeatureExtractor:
         return "dom"
 
     def extract_title(self) -> ResolvedFeature:
-        candidates = []
-        # TODO: implement title extraction logic
+        candidates = find_title_candidates(self.window.dom_snapshot)
+        print(self.window.dom_snapshot)
+        evaluated_candidates = [_evaluate_title_window(candidate) for candidate in candidates]
+        self.logger.info(f"Found {(evaluated_candidates)} title candidates.")
+        max_candidate = max(evaluated_candidates, key=lambda candidate: candidate.score, default=None)
+        if max_candidate:
+            self.logger.info(f"Selected title candidate: {max_candidate}")
+            return ResolvedFeature(
+                selected=max_candidate,
+                candidates=evaluated_candidates)
         return ResolvedFeature(
             selected=None,
-            candidates=[])
+            candidates=evaluated_candidates)
     
     def extract_avatar(self) -> ResolvedFeature:
         candidates = []
