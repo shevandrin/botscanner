@@ -9,7 +9,6 @@ def _find_window_candidates_by_framework(driver, logger):
     """
 
     frameworks = CHATBOT_FRAMEWORKS_PATTERNS
-    print(frameworks)
 
     js = """
     const frameworks = arguments[0];

@@ -79,3 +79,24 @@ def get_element_attribute(element: WebElement, attribute_name: str) -> Optional[
         return attribute_value if attribute_value is not None else None
     except Exception:
         return None
+    
+def wait_for_dom_change(driver, timeout=15):
+    js = """
+    return new Promise(resolve => {
+        const observer = new MutationObserver(() => {
+            observer.disconnect();
+            resolve(true);
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        setTimeout(() => {
+            observer.disconnect();
+            resolve(false);
+        }, arguments[0]);
+    });
+    """
+    driver.execute_async_script(js, timeout * 1000)

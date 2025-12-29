@@ -1,3 +1,4 @@
+from botscanner.utils import wait_for_dom_change
 from selenium.webdriver.remote.webdriver import WebDriver
 import time
 from .finders.window.SimpleDOMChatbotWindowFinder import SimpleDOMChatbotWindowFinder
@@ -65,7 +66,8 @@ class ChatbotDetector:
         try: 
             click_chatbot_launcher(candidate.element, driver, self.logger)
 
-            driver.implicitly_wait(30)
+            #driver.implicitly_wait(30)
+            wait_for_dom_change(driver)
 
             finders = [SimpleDOMChatbotWindowFinder(),
                        FrameworkChatbotWindowFinder(),
