@@ -55,7 +55,8 @@ class BaseCandidate:
             except Exception as e:
                 logger.error(f"Failed to save screenshot for element {self.index}: {e}")
 
-    def save_dom(self, logger, writer) -> None:
+            
+    def save_dom(self, logger, driver, writer) -> None:
         """
         Save the DOM content of the candidate.
         """
@@ -63,6 +64,15 @@ class BaseCandidate:
             file_name = f"dom_{self.dom_name}_{self.index}"
             writer.save_dom(file_name, self.html)
             logger.info(f"Dom content for element {self.index} saved to {file_name}")
+            
+            if self.tag == "iframe" and isinstance(self.element, WebElement):
+                driver = self.element._parent
+                driver.switch_to.frame(self.element)
+                iframe_html = driver.page_source
+                iframe_file_name = f"dom_{self.dom_name}_{self.index}_iframe"
+                writer.save_dom(iframe_file_name, iframe_html)
+                logger.info(f"Iframe DOM content for element {self.index} saved to {iframe_file_name}")
+                driver.switch_to.parent_frame()
         except Exception as e:
             logger.error(f"Failed to save DOM content for element {self.index}: {e}")
 

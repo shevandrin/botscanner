@@ -37,9 +37,8 @@ class CandidateManager:
     def _process_candidate(self, candidate):
         self.logger.info("Processing next candidate:")
         candidate.evaluate()
-        candidate.save_dom(self.logger, self.writer)
+        candidate.save_dom(self.logger, self.driver, self.writer)
         candidate.save_screenshot_element(self.logger, self.driver, self.writer)
-
     def select_candidate(self, min_score: int = 1):
         valid = [c for c in self._candidates if c.score >= min_score]
         if not valid:
