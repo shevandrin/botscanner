@@ -7,7 +7,7 @@ from botscanner.detector import ChatbotDetector
 from botscanner.models.CandidateManager import CandidateManager, CandidateManagerAnchor
 from botscanner.outcomes.writer import OutcomeWriter
 from botscanner.logger import setup_logger
-from botscanner.models.DataCollector import FinalReport, RunMetadata, AnchorProperties
+from botscanner.models.DataCollector import FinalReport, RunMetadata, AnchorProperties, ChatbotWindowProperties
 
 
 def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
@@ -46,15 +46,20 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
     detector = ChatbotDetector(outcome_manager, logger)
     anch_cand_manager = CandidateManagerAnchor(driver, outcome_manager, logger)
 
-    candidate = detector.discover_chatbot(driver, anch_cand_manager)
-    if candidate:
-        SelectedAnchor = AnchorProperties(driver, candidate, logger)
+    selected_anchor = detector.discover_chatbot(driver, anch_cand_manager)
+    if selected_anchor:
+        SelectedAnchor = AnchorProperties(driver, selected_anchor, logger)
     else:
         logger.info("No chatbot launcher candidate was selected.")
         SelectedAnchor = None
 
     win_cand_manager = CandidateManager(driver, outcome_manager, logger)
-    detector.capture_chatbot_window(driver, candidate, win_cand_manager)
+    selected_window = detector.capture_chatbot_window(driver, selected_anchor, win_cand_manager)
+    if selected_window:
+        SelectedWindow = ChatbotWindowProperties(driver, selected_window, logger)
+    else:
+        logger.info("No chatbot window was captured.")
+        SelectedWindow = None
 
     anchor_stats_snapshot = anch_cand_manager.build_stats_snapshot("anchor_candidates")
     win_stats_snapshot = win_cand_manager.build_stats_snapshot("window_candidates")
@@ -62,7 +67,8 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
     report = FinalReport(
         anchor=anchor_stats_snapshot,
         window=win_stats_snapshot,
-        selected_anchor=SelectedAnchor
+        selected_anchor=SelectedAnchor,
+        selected_window=SelectedWindow
     )
 
     report_file = (

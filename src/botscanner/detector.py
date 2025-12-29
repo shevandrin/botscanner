@@ -41,7 +41,6 @@ class ChatbotDetector:
 
         cand_manager.process()
         selected_candidate = cand_manager.select_candidate()
-        print(selected_candidate)
         
         return selected_candidate
 
