@@ -1,6 +1,7 @@
 from dataclasses import asdict, dataclass, field
 from typing import Dict, Any, Optional
 from botscanner.utils import get_element_attribute
+from .ChatbotFeatures import ChatbotFeatures
 
 
 @dataclass
@@ -98,10 +99,13 @@ class FinalReport:
     selected_anchor: Optional[AnchorProperties] = None
     selected_window: Optional[ChatbotWindowProperties] = None
 
+    features: Optional[ChatbotFeatures] = None
+
     def to_dict(self) -> dict:
         return {
             "anchor": self.anchor.to_dict()["strategies"],
             "window": self.window.to_dict()["strategies"],
             "selected_anchor": self.selected_anchor.to_dict() if self.selected_anchor else None,
-            "selected_window": self.selected_window.to_dict() if self.selected_window else None
+            "selected_window": self.selected_window.to_dict() if self.selected_window else None,
+            "features": self.features.to_dict() if self.features else None
         }
