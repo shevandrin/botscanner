@@ -4,6 +4,7 @@ from botscanner.finders.features.find_title_candidates import find_title_candida
 from botscanner.evaluators.eval_title_window import _evaluate_title_window
 from botscanner.evaluators.eval_interface_type import _evaluate_interface_type
 from botscanner.evaluators.get_location_chatbot_window import _get_chatbot_window_position
+from botscanner.evaluators.get_first_chatbot_text import extract_first_chatbot_text
 
 class FeatureExtractor:
     def __init__(self, driver, ChatbotDetector, logger):
@@ -59,6 +60,10 @@ class FeatureExtractor:
             selected=None,
             candidates=evaluated_candidates)
     
+    def extract_first_visible_text(self) -> str:
+        print(self.window.dom_snapshot[:100])
+        return extract_first_chatbot_text(self.window.dom_snapshot)
+    
     def extract_avatar(self) -> ResolvedFeature:
         candidates = []
         return ResolvedFeature(
@@ -70,7 +75,7 @@ class FeatureExtractor:
             anchor_position=self.extract_anchor_position(),
             window_position=self.define_window_position(),
             window_type=self.extract_window_type(),
-            first_visible_text=None,  # later
+            first_visible_text=self.extract_first_visible_text(),
             title=self.extract_title(),
             avatar=self.extract_avatar() # later
         )
