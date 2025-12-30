@@ -2,6 +2,7 @@ from botscanner.models.ChatbotFeatures import ChatbotFeatures, PositionFeature, 
 from botscanner.evaluators.get_location_chatbot_anchor import get_location_chatbot_anchor
 from botscanner.finders.features.find_title_candidates import find_title_candidates
 from botscanner.evaluators.eval_title_window import _evaluate_title_window
+from botscanner.evaluators.eval_interface_type import _evaluate_interface_type
 
 class FeatureExtractor:
     def __init__(self, driver, ChatbotDetector, logger):
@@ -23,12 +24,14 @@ class FeatureExtractor:
         )
 
     def extract_window_type(self) -> str:
-        if self.window.context == "iframe":
-            return "iframe"
-        if self.window.context == "shadow":
-            return "shadow_dom"
-        return "dom"
+        return _evaluate_interface_type(self.window.dom_snapshot)
 
+        #if self.window.context == "iframe":
+        #    return "iframe"
+        #if self.window.context == "shadow":
+        #    return "shadow_dom"
+        #return "dom"
+        
     def extract_title(self) -> ResolvedFeature:
         candidates = find_title_candidates(self.window.dom_snapshot)
         print(self.window.dom_snapshot)
