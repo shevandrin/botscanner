@@ -3,6 +3,7 @@ from botscanner.evaluators.get_location_chatbot_anchor import get_location_chatb
 from botscanner.finders.features.find_title_candidates import find_title_candidates
 from botscanner.evaluators.eval_title_window import _evaluate_title_window
 from botscanner.evaluators.eval_interface_type import _evaluate_interface_type
+from botscanner.evaluators.get_location_chatbot_window import _get_chatbot_window_position
 
 class FeatureExtractor:
     def __init__(self, driver, ChatbotDetector, logger):
@@ -13,11 +14,22 @@ class FeatureExtractor:
 
 
     def extract_anchor_position(self) -> PositionFeature:
-        loc = get_location_chatbot_anchor(self.driver,self.anchor.element)
+        loc = self.anchor.location
         if loc is not None:
             self.logger.info(f"Anchor position determined: {loc}")
             return PositionFeature(
                 sector=loc)
+        else:
+            return PositionFeature(
+                sector=None
+        )
+
+    def define_window_position(self) -> PositionFeature:
+        if self.window.bounding_box is not None:
+            sector = _get_chatbot_window_position(self.window.bounding_box)
+            self.logger.info(f"Window position determined: {sector}")
+            return PositionFeature(
+                sector=sector)
         else:
             return PositionFeature(
                 sector=None
@@ -31,7 +43,7 @@ class FeatureExtractor:
         #if self.window.context == "shadow":
         #    return "shadow_dom"
         #return "dom"
-        
+
     def extract_title(self) -> ResolvedFeature:
         candidates = find_title_candidates(self.window.dom_snapshot)
         print(self.window.dom_snapshot)
@@ -56,7 +68,7 @@ class FeatureExtractor:
     def extract(self) -> ChatbotFeatures:
         return ChatbotFeatures(
             anchor_position=self.extract_anchor_position(),
-            window_position=None,  # later
+            window_position=self.define_window_position(),
             window_type=self.extract_window_type(),
             first_visible_text=None,  # later
             title=self.extract_title(),

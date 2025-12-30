@@ -100,6 +100,7 @@ class BaseCandidate:
 class ChatbotWindowCandidate(BaseCandidate):
     result_json_name: str = "chatbot_window_candidates"
     dom_name: str = "chatbot_window_candidate"
+    bounding_box: Optional[Dict[str, Any]] = None
     def evaluate(self):
         result = _evaluate_iframe_candidate(self.to_dict())
         self.score = result["score"]
@@ -112,6 +113,7 @@ class ChatbotAnchorCandidate(BaseCandidate):
     clickable: Optional[bool] = None
     result_json_name: str = "anchor_candidates"
     dom_name: str = "anchor_candidate"
+    location: Optional[str] = None
     
     def __post_init__(self):
         if self.clickable is None and isinstance(self.element, WebElement):

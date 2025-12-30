@@ -12,6 +12,8 @@ from .finders.anchor.ShadowChatbotAnchor import ShadowChatbotAnchor
 from .finders.anchor.ViewedStyleAnchorFinder import ViewedStyleChatbotAnchorFinder
 from .finders.window.FrameworkChatbotWindowFinder import FrameworkChatbotWindowFinder
 from ._detector_utils import click_chatbot_launcher
+from .evaluators.get_location_chatbot_window import extract_bounding_box
+from.evaluators.get_location_chatbot_anchor import get_location_chatbot_anchor
 
 
 class ChatbotDetector:
@@ -43,6 +45,7 @@ class ChatbotDetector:
 
         cand_manager.process()
         self.selected_anchor = cand_manager.select_candidate()
+        self.selected_anchor.location = get_location_chatbot_anchor(driver, self.selected_anchor.element)
         
         return self.selected_anchor
 
@@ -82,6 +85,7 @@ class ChatbotDetector:
 
             cand_manager.process()
             self.selected_window = cand_manager.select_candidate()
+            self.selected_window.bounding_box = extract_bounding_box(driver, self.selected_window.element)
 
             page_html = driver.page_source
             if self.outcome_writer:
@@ -91,8 +95,6 @@ class ChatbotDetector:
             if self.outcome_writer:
                 self.outcome_writer.save_page_screenshot("start_page_with_chatbot_window", driver)
 
-            # TODO: go to the best candidate take its html and picture
-            # it make sense for shadow and iframe?
 
         except Exception as e:
             self.logger.error(f"Error during chatbot window capture: {e}")
