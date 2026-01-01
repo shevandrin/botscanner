@@ -10,6 +10,17 @@ from .models.CandidateManager import CandidateManager, CandidateManagerAnchor
 from .outcomes.writer import OutcomeWriter
 from .logger import setup_logger
 from .models.DataCollector import FinalReport, RunMetadata, AnchorProperties, ChatbotWindowProperties
+from .models.ChatbotFeatures import PositionFeature
+
+
+class CustomJSONEncoder(json.JSONEncoder):
+    """Custom JSON encoder that handles non-standard types like PositionFeature."""
+    def default(self, obj):
+        if isinstance(obj, PositionFeature):
+            return obj.to_dict()
+        if hasattr(obj, 'to_dict') and callable(getattr(obj, 'to_dict')):
+            return obj.to_dict()
+        return super().default(obj)
 
 
 def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
@@ -66,8 +77,15 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
     anchor_stats_snapshot = anch_cand_manager.build_stats_snapshot("anchor_candidates")
     win_stats_snapshot = win_cand_manager.build_stats_snapshot("window_candidates")
 
-    feature_extractor = FeatureExtractor(driver, detector, logger).extract()
-    interactions_extractor = InteractionsExtractor(driver, detector, logger).extract()
+    if SelectedAnchor:
+        feature_extractor = FeatureExtractor(driver, detector, logger).extract()
+    else :
+        feature_extractor = None
+    
+    if SelectedWindow:
+        interactions_extractor = InteractionsExtractor(driver, detector, logger).extract()
+    else:
+        interactions_extractor = None
 
     report = FinalReport(
         anchor=anchor_stats_snapshot,
@@ -87,7 +105,7 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
         "stats": report.to_dict()
     }
     report_file.write_text(
-        json.dumps(report_data, indent=2),
+        json.dumps(report_data, indent=2, cls=CustomJSONEncoder),
         encoding="utf-8"
     )
 

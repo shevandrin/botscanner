@@ -26,7 +26,7 @@ class FeatureExtractor:
         )
 
     def define_window_position(self) -> PositionFeature:
-        if self.window.bounding_box is not None:
+        if self.window is not None:
             sector = _get_chatbot_window_position(self.window.bounding_box)
             self.logger.info(f"Window position determined: {sector}")
             return PositionFeature(
@@ -37,7 +37,12 @@ class FeatureExtractor:
         )
 
     def extract_window_type(self) -> str:
-        return _evaluate_interface_type(self.window.dom_snapshot)
+        if self.window is not None:
+            return _evaluate_interface_type(self.window.dom_snapshot)
+        else:
+            return PositionFeature(
+                sector=None
+        )
 
         #if self.window.context == "iframe":
         #    return "iframe"
@@ -46,6 +51,10 @@ class FeatureExtractor:
         #return "dom"
 
     def extract_title(self) -> ResolvedFeature:
+        if self.window is None:
+            return ResolvedFeature(
+                selected=None,
+                candidates=[])
         candidates = find_title_candidates(self.window.dom_snapshot)
         evaluated_candidates = [_evaluate_title_window(candidate) for candidate in candidates]
         self.logger.info(f"Found {(evaluated_candidates)} title candidates.")
@@ -60,6 +69,8 @@ class FeatureExtractor:
             candidates=evaluated_candidates)
     
     def extract_first_visible_text(self) -> str:
+        if self.window is None:
+            return None
         return extract_first_chatbot_text(self.window.dom_snapshot)
     
     def extract_avatar(self) -> ResolvedFeature:

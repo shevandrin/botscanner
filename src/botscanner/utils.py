@@ -79,8 +79,43 @@ def get_element_attribute(element: WebElement, attribute_name: str) -> Optional[
         return attribute_value if attribute_value is not None else None
     except Exception:
         return None
-    
-def wait_for_dom_change(driver, timeout=15):
+
+def wait_for_dom_change(driver, timeout=30, quiet_time=1500):
+    js = """
+    const done = arguments[arguments.length - 1];
+    const maxTime = arguments[0];
+    const quietTime = arguments[1];
+
+    let lastMutation = Date.now();
+    let observer;
+
+    observer = new MutationObserver(() => {
+        lastMutation = Date.now();
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true
+    });
+
+    const check = setInterval(() => {
+        if (Date.now() - lastMutation > quietTime) {
+            observer.disconnect();
+            clearInterval(check);
+            done(true);
+        }
+    }, 100);
+
+    setTimeout(() => {
+        observer.disconnect();
+        clearInterval(check);
+        done(false);
+    }, maxTime);
+    """
+    return driver.execute_async_script(js, timeout * 1000, quiet_time)
+
+def wait_for_dom_change_old(driver, timeout=15):
     js = """
     const done = arguments[arguments.length - 1];
 
