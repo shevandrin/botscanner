@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 from typing import Optional
+
+from botscanner.InteractionsExtractor import InteractionsExtractor
 from .FeatureExtractor import FeatureExtractor
 from .launcher import launch_page
 from .ChatbotDetector import ChatbotDetector
@@ -65,13 +67,15 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
     win_stats_snapshot = win_cand_manager.build_stats_snapshot("window_candidates")
 
     feature_extractor = FeatureExtractor(driver, detector, logger).extract()
+    interactions_extractor = InteractionsExtractor(driver, detector, logger).extract()
 
     report = FinalReport(
         anchor=anchor_stats_snapshot,
         window=win_stats_snapshot,
         selected_anchor=SelectedAnchor,
         selected_window=SelectedWindow,
-        features=feature_extractor
+        features=feature_extractor,
+        interactions=interactions_extractor
     )
 
     report_file = (

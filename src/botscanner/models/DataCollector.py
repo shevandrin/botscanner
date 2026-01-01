@@ -1,5 +1,6 @@
 from dataclasses import asdict, dataclass, field
 from typing import Dict, Any, Optional
+from botscanner.models.ChatbotInteractions import ChatbotInteractions
 from botscanner.utils import get_element_attribute
 from .ChatbotFeatures import ChatbotFeatures
 
@@ -100,6 +101,7 @@ class FinalReport:
     selected_window: Optional[ChatbotWindowProperties] = None
 
     features: Optional[ChatbotFeatures] = None
+    interactions: Optional[ChatbotInteractions] = None
 
     def to_dict(self) -> dict:
         return {
@@ -107,5 +109,6 @@ class FinalReport:
             "window": self.window.to_dict()["strategies"],
             "selected_anchor": self.selected_anchor.to_dict() if self.selected_anchor else None,
             "selected_window": self.selected_window.to_dict() if self.selected_window else None,
-            "features": self.features.to_dict() if self.features else None
+            "features": self.features.to_dict() if self.features else None,
+            "interactions": self.interactions.to_dict() if self.interactions else None
         }
