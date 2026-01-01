@@ -1,5 +1,9 @@
 from selenium.webdriver.common.by import By
-from botscanner.patterns import CHATBOT_WINDOWS_HOOKS_PATTERNS
+from botscanner.patterns import load_patterns, get_chatbot_windows_hooks_patterns
+
+
+patterns = load_patterns()
+CHATBOT_WINDOWS_HOOKS_PATTERNS = get_chatbot_windows_hooks_patterns(patterns)
 
 
 def _find_windows_candidates_by_hooks(driver, logger):

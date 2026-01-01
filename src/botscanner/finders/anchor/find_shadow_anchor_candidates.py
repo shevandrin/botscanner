@@ -1,7 +1,11 @@
-from ...patterns import CORE_ANCHORS_PATTERNS
+from ...patterns import load_patterns, get_chatbot_windows_shadow_dom_patterns
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from ...jstools.find_shadow_anchor import SHADOW_ANCHOR
+
+
+patterns = load_patterns()
+CORE_ANCHORS_PATTERNS = get_chatbot_windows_shadow_dom_patterns(patterns)
 
 def _find_shadow_anchor_candidates(driver: WebDriver, logger):
     """

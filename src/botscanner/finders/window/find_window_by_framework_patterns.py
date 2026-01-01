@@ -1,4 +1,8 @@
-from ...patterns import CHATBOT_FRAMEWORKS_PATTERNS
+from ...patterns import load_patterns, get_chatbot_frameworks_patterns
+
+
+patterns = load_patterns()
+CHATBOT_FRAMEWORKS_PATTERNS = get_chatbot_frameworks_patterns(patterns)
 
 def _find_window_candidates_by_framework(driver, logger):
     """

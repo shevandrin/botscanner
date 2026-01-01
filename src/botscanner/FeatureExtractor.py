@@ -47,7 +47,6 @@ class FeatureExtractor:
 
     def extract_title(self) -> ResolvedFeature:
         candidates = find_title_candidates(self.window.dom_snapshot)
-        print(self.window.dom_snapshot)
         evaluated_candidates = [_evaluate_title_window(candidate) for candidate in candidates]
         self.logger.info(f"Found {(evaluated_candidates)} title candidates.")
         max_candidate = max(evaluated_candidates, key=lambda candidate: candidate.score, default=None)
@@ -61,7 +60,6 @@ class FeatureExtractor:
             candidates=evaluated_candidates)
     
     def extract_first_visible_text(self) -> str:
-        print(self.window.dom_snapshot[:100])
         return extract_first_chatbot_text(self.window.dom_snapshot)
     
     def extract_avatar(self) -> ResolvedFeature:

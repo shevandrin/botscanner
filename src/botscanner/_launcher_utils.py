@@ -2,8 +2,11 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
 import time
-from .patterns import COOKIE_PATTERNS
+from .patterns import load_patterns, get_cookie_patterns
 from .jstools.find_button_by_text import FIND_BUTTON_BY_TEXT_JS
+
+patterns = load_patterns()
+COOKIE_PATTERNS = get_cookie_patterns(patterns)
 
 
 def _prepare_url(url: str) -> str:

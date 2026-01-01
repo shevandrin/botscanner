@@ -1,6 +1,10 @@
 from selenium.webdriver.common.by import By
 from ...jstools.shadow_search_js import SHADOW_SEARCH_JS
-from ...patterns import CHATBOT_WINDOWS_SHADOW_DOM_PATTERNS
+from ...patterns import load_patterns, get_chatbot_windows_shadow_dom_patterns
+
+
+patterns = load_patterns()
+CHATBOT_WINDOWS_SHADOW_DOM_PATTERNS = get_chatbot_windows_shadow_dom_patterns(patterns)
 
 def _find_windows_candidates_as_shadowdom(driver, logger):
     """

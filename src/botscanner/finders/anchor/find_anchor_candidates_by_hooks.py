@@ -1,6 +1,9 @@
-from ...patterns import CORE_ANCHORS_PATTERNS
+from ...patterns import load_patterns, get_core_anchors_patterns
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
+
+patterns = load_patterns()
+CORE_ANCHORS_PATTERNS = get_core_anchors_patterns(patterns)
 
 
 def _find_anchor_candidates_by_hooks(driver: WebDriver, logger):
