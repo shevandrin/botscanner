@@ -16,8 +16,7 @@ class ShadowChatbotAnchor(BaseChatbotAnchorFinder):
             context="main",
             element=None,
             tag=el.get('tag'),
-            html="",
-            #html=el.get('html'),
+            html=el.get('html'),
             strategy=self.__class__.__name__,
             clickable=el.get('clickable'),
             metadata={

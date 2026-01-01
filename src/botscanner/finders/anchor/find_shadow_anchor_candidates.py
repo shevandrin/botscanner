@@ -21,7 +21,7 @@ def _find_shadow_anchor_candidates(driver: WebDriver, logger):
         List of structured data about Shadow DOM elements matching chatbot anchor patterns.
     """
 
-    keywords = CORE_ANCHORS_PATTERNS.get('chatbot_anchors', [])
+    keywords = CORE_ANCHORS_PATTERNS
 
     elements = driver.execute_script(SHADOW_ANCHOR,
                                     [k.lower() for k in keywords])

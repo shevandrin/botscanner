@@ -35,7 +35,7 @@ class ChatbotDetector:
 
         finders = [SimpleDOMChatbotAnchorFinder(),
                    ComputedStyleChatbotAnchorFinder(),
-                   #ShadowChatbotAnchor(),
+                   ShadowChatbotAnchor(),
                    ViewedStyleChatbotAnchorFinder(),
                    ]
 
@@ -45,7 +45,8 @@ class ChatbotDetector:
 
         cand_manager.process()
         self.selected_anchor = cand_manager.select_candidate()
-        self.selected_anchor.location = get_location_chatbot_anchor(driver, self.selected_anchor.element)
+        if self.selected_anchor:
+            self.selected_anchor.location = get_location_chatbot_anchor(driver, self.selected_anchor.element)
         
         return self.selected_anchor
 
@@ -72,10 +73,11 @@ class ChatbotDetector:
 
             #driver.implicitly_wait(30)
             wait_for_dom_change(driver)
+            time.sleep(15)
 
             finders = [SimpleDOMChatbotWindowFinder(),
                        FrameworkChatbotWindowFinder(),
-                       #ShadowDOMChatbotWindowFinder(),
+                       ShadowDOMChatbotWindowFinder(),
                        IframeChatbotWindowFinder(),
                        ]
 
