@@ -28,6 +28,10 @@ def _evaluate_anchor_candidate(candidate: dict) -> dict:
         score += 1
         evidence.append("keyword 'widget'")
 
+    if "widget-launcher" in html:
+        score += 4
+        evidence.append("keyword 'widget-launcher'")
+
     if has_visible_text(html):
         score += 0.5
         evidence.append("contains visible text")

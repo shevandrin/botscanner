@@ -12,6 +12,14 @@ def _evaluate_iframe_candidate(candidate: dict) -> dict:
         score += 2
         evidence.append("keyword 'window'")
     
+    if "messeng" in html:
+        score += 1
+        evidence.append("keyword 'messeng'")
+
+    if "ask" in html:
+        score += 1
+        evidence.append("keyword 'ask'")
+    
     return {
         **candidate,
         "score": score,

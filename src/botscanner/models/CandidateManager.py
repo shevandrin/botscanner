@@ -1,6 +1,7 @@
 from time import time
 from botscanner.models.DataCollector import AnchorProperties, ChatbotWindowProperties, StatsSnapshot, StrategyStats
 from botscanner.outcomes.writer import OutcomeWriter
+from botscanner.selectors.select_anchor_chatbot_widget import select_anchor_candidate
 
 
 class CandidateManager:
@@ -81,23 +82,6 @@ class CandidateManager:
         )
 
 class CandidateManagerAnchor(CandidateManager):
-        
-        def select_candidate(self, min_score: int = 1):
-            valid_s1 = [c for c in self._candidates if c.score >= min_score and c.strategy == "SimpleDOMChatbotAnchorFinder"]
-            if valid_s1:
-                valid_s1.sort(key=lambda x: x.score, reverse=True)
-                return valid_s1[0]
-        
-            valid_s2 = [c for c in self._candidates if c.score >= min_score and c.strategy == "ComputedStyleChatbotAnchorFinder"]
-            if valid_s2:
-                valid_s2.sort(key=lambda x: x.score, reverse=True)
-                return valid_s2[0]
-
-            valid_s3 = [c for c in self._candidates if c.score >= 0 and c.strategy == "ViewedStyleChatbotAnchorFinder"]
-            self.logger.info(f"ViewedStyleChatbotAnchorFinder valid candidates count: {len(valid_s3)}")
-            if valid_s3:
-                valid_s3.sort(key=lambda x: x.score, reverse=True)
-                return valid_s3[0]
-            
-            return None
+    def select_candidate(self, min_score: int = 1):
+        return select_anchor_candidate(self._candidates, min_score)
     
