@@ -41,11 +41,16 @@ class CandidateManager:
         candidate.make_dom_snapshot(self.driver)
         candidate.save_dom(self.logger, self.driver, self.writer)
         candidate.save_screenshot_element(self.logger, self.driver, self.writer)
-    def select_candidate(self, min_score: int = 1):
+    def select_candidate(self, min_score: int = 0):
         valid = [c for c in self._candidates if c.score >= min_score]
         if not valid:
             return None
-        return max(valid, key=lambda c: c.score)
+
+        def priority_key(c):
+            iframe_priority = 1 if c.context == "iframe" else 0
+            return (c.score, iframe_priority)
+
+        return max(valid, key=priority_key)
     
     def _aggregate_by_strategy(self, candidates):
         stats = {}
@@ -82,6 +87,6 @@ class CandidateManager:
         )
 
 class CandidateManagerAnchor(CandidateManager):
-    def select_candidate(self, min_score: int = 1):
+    def select_candidate(self, min_score: int = 0):
         return select_anchor_candidate(self._candidates, min_score)
     
