@@ -40,6 +40,9 @@ detection:
     amazon_connect:
       id:
         - "amazon-connect-chat-window"
+    inercom:
+      class:
+        - "ntercom-launcher-frame"
   shadow_dom_indicators:
     - "chatbot"
     - "chat"
