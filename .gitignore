@@ -128,7 +128,7 @@ venv.bak/
 test.py
 *.ipynb
 *.csv
-!data/*.csv
+!botscanner/data/*.csv
 *.txt
 *.png
 
