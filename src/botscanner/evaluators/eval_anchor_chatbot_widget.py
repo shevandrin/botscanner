@@ -36,6 +36,10 @@ def _evaluate_anchor_candidate(candidate: dict) -> dict:
         score += 0.5
         evidence.append("contains visible text")
 
+    if "intercom-launcher-frame " in html:
+        score += 5
+        evidence.append("keyword 'intercom-launcher-frame'")
+
     if not candidate['clickable']:
         score = 0
         evidence = ["not clickable"]
