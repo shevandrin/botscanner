@@ -13,6 +13,7 @@ detection:
       - "Alle akzeptieren"
       - "ALLE AKZEPTIEREN"
       - "Accept all cookies"
+      - "Accept All Cookies"
       - "Continue"
       - "Akzeptieren"
     literal_xpaths:

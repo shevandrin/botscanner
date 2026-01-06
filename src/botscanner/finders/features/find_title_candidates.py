@@ -39,7 +39,7 @@ def find_title_candidates(html: str) -> List[FeatureCandidate]:
 
         # Role-based heuristics
         role = el.get("role")
-        if role in ("head", "title") or el.name.startswith("h"):
+        if role in ("head", "title", "heading") or el.name.startswith("h"):
             candidates.append(
                 FeatureCandidate(
                     source="role",

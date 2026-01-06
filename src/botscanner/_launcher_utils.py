@@ -48,7 +48,7 @@ def _handle_cookie_consent(driver: WebDriver, logger):
         logger: Logger for logging messages.
     """
 
-    time.sleep(2)
+    time.sleep(6)
     # Forming a list of common patterns for "accept" buttons.
     text_phrases = COOKIE_PATTERNS.get('button_text_phrases', [])
     literal_xpaths = COOKIE_PATTERNS.get('literal_xpaths', [])
