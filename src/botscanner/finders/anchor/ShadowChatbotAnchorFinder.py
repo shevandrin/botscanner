@@ -3,7 +3,7 @@ from ...models.BaseCandidate import ChatbotAnchorCandidateJS
 from .find_shadow_anchor_candidates import _find_shadow_anchor_candidates
 
 
-class ShadowChatbotAnchor(BaseChatbotAnchorFinder):
+class ShadowChatbotAnchorFinder(BaseChatbotAnchorFinder):
     name = "shadow_chatbot_anchor"
 
     def find(self, driver, logger):

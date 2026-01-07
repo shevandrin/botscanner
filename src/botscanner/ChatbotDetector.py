@@ -8,7 +8,7 @@ from .models.CandidateManager import CandidateManagerAnchor, CandidateManager
 from .models.BaseCandidate import ChatbotAnchorCandidate
 from .finders.anchor.SimpleChatbotAnchorFinder import SimpleDOMChatbotAnchorFinder
 from .finders.anchor.ComputedStyleChatbotAnchorFinder import ComputedStyleChatbotAnchorFinder
-from .finders.anchor.ShadowChatbotAnchor import ShadowChatbotAnchor
+from .finders.anchor.ShadowChatbotAnchorFinder import ShadowChatbotAnchorFinder
 from .finders.anchor.ViewedStyleAnchorFinder import ViewedStyleChatbotAnchorFinder
 from .finders.window.FrameworkChatbotWindowFinder import FrameworkChatbotWindowFinder
 from ._detector_utils import click_chatbot_launcher
@@ -35,7 +35,7 @@ class ChatbotDetector:
 
         finders = [SimpleDOMChatbotAnchorFinder(),
                    ComputedStyleChatbotAnchorFinder(),
-                   ShadowChatbotAnchor(),
+                   ShadowChatbotAnchorFinder(),
                    ViewedStyleChatbotAnchorFinder(),
                    ]
 
@@ -46,7 +46,7 @@ class ChatbotDetector:
         cand_manager.process()
         self.selected_anchor = cand_manager.select_candidate()
         if self.selected_anchor:
-            self.selected_anchor.location = get_location_chatbot_anchor(driver, self.selected_anchor.element)
+            self.selected_anchor.location = self.selected_anchor.get_location_value(driver)
         
         return self.selected_anchor
 
@@ -69,7 +69,8 @@ class ChatbotDetector:
             return None
         self.logger.info(f"Clicking on chatbot launcher element: {self.selected_anchor.to_dict()}")                 
         try: 
-            click_chatbot_launcher(self.selected_anchor.element, driver, self.logger)
+            self.selected_anchor.click_action(driver, self.logger)
+            #click_chatbot_launcher(self.selected_anchor.element, driver, self.logger)
 
             #driver.implicitly_wait(30)
             wait_for_dom_change(driver)
