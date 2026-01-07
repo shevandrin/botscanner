@@ -1,5 +1,5 @@
 from .BaseChatbotAnchorFinder import BaseChatbotAnchorFinder
-from ...models.BaseCandidate import ChatbotAnchorCandidate
+from ...models.BaseCandidate import ChatbotAnchorCandidateJS
 from .find_shadow_anchor_candidates import _find_shadow_anchor_candidates
 
 
@@ -10,7 +10,7 @@ class ShadowChatbotAnchor(BaseChatbotAnchorFinder):
         logger.info("searching shadow dom chatbot anchors...")
         elements = _find_shadow_anchor_candidates(driver, logger)
         result = [
-            ChatbotAnchorCandidate(
+            ChatbotAnchorCandidateJS(
             index=-1,
             source="dom",
             context="main",
@@ -20,6 +20,7 @@ class ShadowChatbotAnchor(BaseChatbotAnchorFinder):
             strategy=self.__class__.__name__,
             clickable=el.get('clickable'),
             metadata={
+                "identifiers": el.get('identifiers', {}),
                 "keywordHits": el.get('keywordHits'),
                 "text": el.get('text', '')[:200],
                 "cursor": el.get('cursor'),
@@ -35,7 +36,7 @@ class ShadowChatbotAnchor(BaseChatbotAnchorFinder):
         ]
 
         # print shadow elements found
-        for el in elements:
-            #print(el.get('tag'), el.get('keywordHits'), el.get('clickable'))
-            pass
+        for el in result:
+            print(el.to_dict())
+            #pass
         return result

@@ -151,14 +151,20 @@ return (function (KEYWORDS) {
 
             results.push({
               tag,
+              identifiers: {
+                id: el.id ? normalize(el.id) : null,
+                class: el.className ? normalize(el.className).slice(0, 80) : null,
+                name: el.getAttribute("name"),
+                ariaLabel: normalize(el.getAttribute("aria-label"))
+              },
               keywordHits: hits,
               clickable: isClickable(el),
               cursor: style.cursor,
               text: normalize(el.innerText).slice(0, MAX_TEXT_LEN),
               html: el.outerHTML,
               bounding: {
-                x: rect.x,
-                y: rect.y,
+                x: rect.left + window.scrollX,
+                y: rect.top + window.scrollY,
                 width: rect.width,
                 height: rect.height
               },

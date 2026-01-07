@@ -141,32 +141,16 @@ class ChatbotAnchorCandidateJS(ChatbotAnchorCandidate):
     dom_name: str = "anchor_js_candidate"
 
     def save_screenshot_element(self, logger, driver, writer):
-        from PIL import Image
-        SCROLL_TO_BBOX_JS = """
-        window.scrollTo(
-        arguments[0] - window.innerWidth / 2,
-        arguments[1] - window.innerHeight / 2
-        );
-        """
+        name = f"screenshot_{self.dom_name}_{self.index}"
 
-        bbox = self.metadata["bounding"]
-        driver.execute_script(
-            SCROLL_TO_BBOX_JS,
-            bbox["x"],
-            bbox["y"]
-        )
-
-        full_path = "full_page.png"
-        driver.save_screenshot(full_path)
-
-        x = int(bbox["x"])
-        y = int(bbox["y"])
-        w = int(bbox["width"])
-        h = int(bbox["height"])
-
-        img = Image.open(full_path)
-
-        element_img = img.crop((x, y, x + w, y + h))
-        element_img.save("chatbot_launcher.png")
+        try:
+            writer.save_screenshot_js_element(
+                name=name, 
+                driver=driver,
+                bounding=self.metadata.get("bounding"),
+                logger=logger)
+            logger.info(f"Screenshot for JS element {self.index} saved to {name}")
+        except Exception as e:
+            logger.error(f"Failed to save screenshot for JS element {self.index}: {e}")
 
         return self

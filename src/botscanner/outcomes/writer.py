@@ -64,6 +64,41 @@ class OutcomeWriter:
             dst.relative_to(self.scan_dir)
         )
 
+    def save_screenshot_js_element(self, *, name: str, driver, bounding=None, logger=None):
+        from PIL import Image
+        import tempfile
+        from pathlib import Path
+
+        dst =self.screenshots_dir / f"{name}.png"
+        if not bounding:
+            logger.error("Bounding box is required to save JS element screenshot.")
+
+        tmp = Path(tempfile.mkstemp(suffix=".png")[1])
+        driver.save_screenshot(str(tmp))
+
+        img = Image.open(tmp)
+        img_w, img_h = img.size
+
+        x = int(bounding["x"])
+        y = int(bounding["y"])
+        w = int(bounding["width"])
+        h = int(bounding["height"])
+
+        x1 = max(0, x)
+        y1 = max(0, y)
+        x2 = min(img_w, x + w)
+        y2 = min(img_h, y + h)
+
+        if x1 >= x2 or y1 >= y2:
+            logger.error(f"Invalid bounding box for JS element {name}, cannot crop screenshot.")
+            return
+
+        img.crop((x1, y1, x2, y2)).save(dst)
+
+        self._artefacts["screenshots"][name] = str(
+            dst.relative_to(self.scan_dir)
+            )
+
     def save_json(self, name: str, records: list[dict]):
         """
         Save structured JSON data into result/ folder.

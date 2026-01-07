@@ -10,12 +10,14 @@ def select_anchor_candidate(candidates, min_score: int = 1):
          SimpleDOMChatbotAnchorFinder >
          ComputedStyleChatbotAnchorFinder >
          ViewedStyleChatbotAnchorFinder
+         ShadowChatbotAnchor
     """
 
     strategy_priority = [
         "SimpleDOMChatbotAnchorFinder",
         "ComputedStyleChatbotAnchorFinder",
         "ViewedStyleChatbotAnchorFinder",
+        "ShadowChatbotAnchor"
     ]
 
     # Group candidates by strategy
