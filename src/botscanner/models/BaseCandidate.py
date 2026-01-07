@@ -107,6 +107,11 @@ class ChatbotWindowCandidate(BaseCandidate):
         self.score = result["score"]
         self.evidence = result["evidence"]
         return self
+    
+@dataclass
+class ChatbotWindowCandidateJS(ChatbotWindowCandidate):
+    result_json_name: str = "chatbot_window_js_candidates"
+    dom_name: str = "chatbot_window_shadow_candidate"
 
 
 @dataclass
@@ -143,7 +148,7 @@ class ChatbotAnchorCandidate(BaseCandidate):
         return self.location
     
     def click_action(self, driver, logger) -> None:
-        from botscanner.utils import click_chatbot_launcher
+        from botscanner._detector_utils import click_chatbot_launcher
         if isinstance(self.element, WebElement):
             try:
                 click_chatbot_launcher(self.element, driver, logger)

@@ -131,7 +131,6 @@ return (function (KEYWORDS) {
 
     for (const el of all) {
       try {
-        // 🔒 HARD BLOCK — these must never appear
         const tag = el.tagName.toLowerCase();
         if (
           tag === "head" ||
@@ -188,7 +187,7 @@ return (function (KEYWORDS) {
   }
 
   traverse(document, []);
-  return results;
+  return results.filter(r => r.hostChain && r.hostChain.length > 0);
 })(arguments[0]);
 
 """
