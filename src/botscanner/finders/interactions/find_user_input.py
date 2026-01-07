@@ -31,9 +31,10 @@ def find_user_input_field(html: str) -> Optional[Dict]:
 
     fallback = soup.find(
         lambda tag: (
-            tag.name in ["div", "input"]
+            (tag.name in ["div", "input"]
             and tag.get("class")
-            and any("textarea" in cls.lower() for cls in tag.get("class"))
+            and any("textarea" in cls.lower() for cls in tag.get("class")))
+            or (tag.name == "input" and tag.get("type") == "text")
         )
     )
 
