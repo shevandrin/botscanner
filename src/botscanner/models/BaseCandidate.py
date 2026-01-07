@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Literal
 from botscanner.evaluators.eval_iframe_chatbot_window import _evaluate_iframe_candidate
 from botscanner.evaluators.eval_anchor_chatbot_widget import _evaluate_anchor_candidate
+from botscanner.evaluators.eval_shadow_chatbot_window import _evaluate_shadow_candidate
 from selenium.webdriver.remote.webelement import WebElement
 from botscanner.utils import _is_element_clickable
 from selenium.webdriver.common.action_chains import ActionChains
@@ -112,6 +113,12 @@ class ChatbotWindowCandidate(BaseCandidate):
 class ChatbotWindowCandidateJS(ChatbotWindowCandidate):
     result_json_name: str = "chatbot_window_js_candidates"
     dom_name: str = "chatbot_window_shadow_candidate"
+    def evaluate(self):
+        result = _evaluate_shadow_candidate(self.to_dict())
+        self.score = result["score"]
+        self.evidence = result["evidence"]
+        return self
+
 
 
 @dataclass

@@ -1,35 +1,50 @@
 SHADOW_SEARCH_JS = r"""
-(function (KEYWORDS) {
+return (function (KEYWORDS) {
+    console.log("Starting shadow DOM chatbot element search (pruned)");
+
     const results = [];
 
-    function traverse(root) {
-        if (!root) return;
+    function isInShadowDom(el) {
+        return el.getRootNode() instanceof ShadowRoot;
+    }
 
-        const elements = root.querySelectorAll('*');
-        for (const el of elements) {
-            const cls = (el.className || '').toString().toLowerCase();
-            const id = (el.id || '').toLowerCase();
-            const aria = (el.getAttribute && el.getAttribute('aria-label') || '').toLowerCase();
+    function computeScore(el) {
+        const cls = (el.className || "").toString().toLowerCase();
+        const id = (el.id || "").toLowerCase();
+        const aria = (el.getAttribute?.("aria-label") || "").toLowerCase();
 
-            let score = 0;
-            for (const k of KEYWORDS) {
-                if (cls.includes(k)) score += 2;
-                if (id.includes(k)) score += 2;
-                if (aria.includes(k)) score += 3;
-            }
+        let score = 0;
+        for (const k of KEYWORDS) {
+            if (cls.includes(k)) score += 2;
+            if (id.includes(k)) score += 3;
+            if (aria.includes(k)) score += 3;
+        }
+        return score;
+    }
 
+    function traverse(node) {
+        if (!node) return;
+
+
+        if (node.shadowRoot) {
+            traverse(node.shadowRoot);
+        }
+
+        if (node.nodeType === Node.ELEMENT_NODE && isInShadowDom(node)) {
+            const score = computeScore(node);
             if (score > 0) {
-                el.__chatbot_score = score;
-                results.push(el);
+                node.__chatbot_score = score;
+                results.push(node);
+                return; 
             }
+        }
 
-            if (el.shadowRoot) {
-                traverse(el.shadowRoot);
-            }
+        for (const child of node.children || []) {
+            traverse(child);
         }
     }
 
     traverse(document);
     return results;
-})
+})(arguments[0]);
 """

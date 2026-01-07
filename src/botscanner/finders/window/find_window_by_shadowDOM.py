@@ -6,6 +6,7 @@ from ...patterns import load_patterns, get_chatbot_windows_shadow_dom_patterns
 patterns = load_patterns()
 CHATBOT_WINDOWS_SHADOW_DOM_PATTERNS = get_chatbot_windows_shadow_dom_patterns(patterns)
 
+print(CHATBOT_WINDOWS_SHADOW_DOM_PATTERNS)
 def _find_windows_candidates_as_shadowdom(driver, logger):
     """
     Find potential chatbot window elements within Shadow DOM structures.
@@ -23,10 +24,9 @@ def _find_windows_candidates_as_shadowdom(driver, logger):
     Raises:
         WebDriverException if JavaScript execution fails
     """
-
-    keywords = CHATBOT_WINDOWS_SHADOW_DOM_PATTERNS
+    keywords = [k.lower() for k in CHATBOT_WINDOWS_SHADOW_DOM_PATTERNS]
     elements = driver.execute_script(SHADOW_SEARCH_JS,
-                                    [k.lower() for k in keywords])
+                                    keywords)
 
     if not elements:
         logger.info("No shadow DOM chatbot window candidates found.")
