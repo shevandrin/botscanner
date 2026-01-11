@@ -7,6 +7,10 @@ def _evaluate_iframe_candidate(candidate: dict) -> dict:
     if "chat" in html:
         score += 3
         evidence.append("keyword 'chat'")
+
+    if "bot" in html:
+        score += 3
+        evidence.append("keyword 'bot'")
     
     if "window" in html:
         score += 2
