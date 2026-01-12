@@ -1,4 +1,4 @@
-# TODO: Take heuristics values from patterns
+# For future development: take heuristics values from patterns
 def _evaluate_iframe_candidate(candidate: dict) -> dict:
     html = candidate["html"].lower()
     score = 0

@@ -10,7 +10,7 @@ def has_visible_text(html: str) -> bool:
     return len(text) > 0
 
 
-# TODO: Take heuristics values from patterns
+#  For future development: take heuristics values from patterns
 def _evaluate_anchor_candidate(candidate: dict) -> dict:
     html = candidate["html"].lower()
     score = 0
