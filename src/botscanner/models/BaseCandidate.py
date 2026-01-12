@@ -213,7 +213,7 @@ class ChatbotAnchorCandidateJS(ChatbotAnchorCandidate):
 
         x = bounding["x"] + bounding["width"] / 2
         y = bounding["y"] + bounding["height"] / 2
-        print( f"Clicking at coordinates: ({x}, {y})" )
+        logger.info( f"Clicking at coordinates: ({x}, {y})" )
 
         try:
             result = driver.execute_script(
@@ -237,7 +237,6 @@ class ChatbotAnchorCandidateJS(ChatbotAnchorCandidate):
                 """,
                 x, y
             )
-            print(result)
             return True
         except Exception as e:
             if logger:

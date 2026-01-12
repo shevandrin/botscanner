@@ -1,5 +1,3 @@
-print("Updating find_shadow_anchor.py34")
-
 SHADOW_ANCHOR = r"""
 return (function (KEYWORDS) {
   const results = [];

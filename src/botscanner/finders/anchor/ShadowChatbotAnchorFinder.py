@@ -34,9 +34,4 @@ class ShadowChatbotAnchorFinder(BaseChatbotAnchorFinder):
             }
             ) for el in elements            
         ]
-
-        # print shadow elements found
-        for el in result:
-            #print(el.to_dict())
-            pass
         return result
