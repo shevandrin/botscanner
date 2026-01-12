@@ -1,10 +1,3 @@
-xxxFIND_VIEWPORT_ANCHORED_INTERACTIVE_ELEMENTS_JS = r"""
-(function () {
-    return document.querySelector("div");
-})();
-"""
-
-
 FIND_VIEWPORT_ANCHORED_INTERACTIVE_ELEMENTS_JS = r"""
 return (function () {
 

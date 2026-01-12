@@ -10,8 +10,6 @@ return (function (KEYWORDS) {
     "img"
   ]);
 
-  /* ---------- helpers ---------- */
-
   function normalize(str) {
     return (str || "").toString().toLowerCase();
   }
@@ -120,7 +118,7 @@ return (function (KEYWORDS) {
     };
   }
 
-  /* ---------- traversal ---------- */
+  /* traversal */
 
   function traverse(root, hostChain = []) {
     if (!root || !root.querySelectorAll) return;
