@@ -11,7 +11,7 @@ Prerequisites:
 * A  ChromeDriver. Ensure your ChromeDriver is correctly installed and accessible in your system's PATH
 
 ```Bash
-pip install --upgrade https://github.com/shevandrin/botscanner
+pip install git+https://github.com/shevandrin/botscanner.git
 ```
 
 ### Setup
