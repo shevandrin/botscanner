@@ -165,9 +165,7 @@ def _get_html_from_element(element: WebElement, driver: WebDriver):
         driver.switch_to.frame(live_iframe)
         iframe_html = driver.find_element(By.TAG_NAME, "html").get_attribute('outerHTML')
         driver.switch_to.default_content()
-        print("  - Successfully extracted iframe HTML and switched back.")
     except Exception as e:
-        print(f"  - Error switching to iframe: {e}")
         driver.switch_to.default_content()
         iframe_html = "<!-- Could not retrieve iframe content -->"
 
