@@ -141,36 +141,3 @@ def click_chatbot_launcher(element, driver, logger):
             logger.warning("No DOM change detected after JS click")
             return clicking_inside_iframe(driver, element, logger)
         return True
-
-def _get_html_from_element(element: WebElement, driver: WebDriver):
-    """
-    Provides with HTML of an element, handling iframes.
-    Args:
-        element:
-        driver:
-
-    Returns:
-        The HTML content as a string.
-    """
-
-    wrapper_html = element.get_attribute("outerHTML")
-    soup = BeautifulSoup(wrapper_html, features="html.parser")
-
-    iframe_tag = soup.find('iframe')
-    if not iframe_tag:
-        return wrapper_html
-
-    try:
-        live_iframe = element.find_element(By.TAG_NAME, 'iframe')
-        driver.switch_to.frame(live_iframe)
-        iframe_html = driver.find_element(By.TAG_NAME, "html").get_attribute('outerHTML')
-        driver.switch_to.default_content()
-    except Exception as e:
-        driver.switch_to.default_content()
-        iframe_html = "<!-- Could not retrieve iframe content -->"
-
-    iframe_soup = BeautifulSoup(iframe_html, features="html.parser")
-    iframe_tag.clear()
-    iframe_tag.append(iframe_soup)
-
-    return soup.prettify()
