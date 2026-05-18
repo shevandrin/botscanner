@@ -34,7 +34,7 @@ def run_scan(url: str, output_dir: Optional[Path] = None, quiet: bool = True):
         quiet (bool, optional): If True, suppresses output during the discovery process.
             Defaults to True.
     Returns:
-         // TODO: specify return
+        WebDriver: The Selenium WebDriver instance used for the scan.
     """
 
     outcome_manager = OutcomeWriter(url, output_dir)
